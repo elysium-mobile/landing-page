@@ -25,26 +25,26 @@ const t = useTranslations(Astro.currentLocale);
 const lp = (p: string) => localizedPath(Astro.currentLocale, p);
 ---
 
-<section class="demo-splash relative pt-16 pb-20 overflow-hidden">
+<section class="demo-splash relative pt-10 pb-12 sm:pt-14 sm:pb-16 lg:pt-16 lg:pb-20 overflow-x-clip overflow-y-visible">
   <!-- Same halo treatment as the landing Hero so the page feels native. -->
   <div class="demo-glow-a"></div>
   <div class="demo-glow-b"></div>
 
-  <div class="shell relative z-10 grid items-center gap-12 lg:gap-16 lg:grid-cols-[1.1fr_1fr] grid-cols-1">
-    <!-- Copy column. -->
-    <div>
-      <div class="fade-up">
+  <div class="shell relative z-10 grid items-center gap-10 sm:gap-12 lg:gap-16 lg:grid-cols-[1.1fr_1fr] grid-cols-1">
+    <!-- Copy column — centered on mobile, left-aligned on desktop. -->
+    <div class="text-center lg:text-left">
+      <div class="fade-up flex justify-center lg:justify-start">
         <HeroEyebrow icon="eye">{t('demo.eyebrow')}</HeroEyebrow>
       </div>
       <h1
         class="t-display fade-up delay-1 m-0 mb-6"
         set:html={t('demo.title.html')}
       ></h1>
-      <p class="text-[18px] leading-[1.55] text-text-soft max-w-130 m-0 mb-8 fade-up delay-2">
+      <p class="text-[16px] sm:text-[18px] leading-[1.55] text-text-soft max-w-130 mx-auto lg:mx-0 m-0 mb-8 fade-up delay-2">
         {t('demo.body')}
       </p>
 
-      <div class="flex flex-wrap gap-3 items-center mb-10 fade-up delay-3">
+      <div class="flex flex-wrap gap-3 items-center justify-center lg:justify-start mb-10 fade-up delay-3">
         <Button href="mailto:hola@elysium.team" variant="primary" size="lg">
           {t('demo.cta.sales')}
           <Icon name="arrow-right" width={16} height={16} />
@@ -53,7 +53,7 @@ const lp = (p: string) => localizedPath(Astro.currentLocale, p);
       </div>
 
       <!-- "What we're polishing" — small section reusing the landing's bullet style. -->
-      <div class="fade-up delay-4">
+      <div class="fade-up delay-4 text-left max-w-130 mx-auto lg:mx-0">
         <h2 class="t-section-eyebrow block mb-4">{t('demo.list.title')}</h2>
         <FeatureList>
           <FeatureItem theme="employee" lead={t('demo.list.1.lead')}>{t('demo.list.1.rest')}</FeatureItem>

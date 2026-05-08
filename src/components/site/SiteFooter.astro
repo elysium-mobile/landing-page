@@ -2,8 +2,8 @@
 /**
  * SiteFooter — dark gradient footer with brand block + 3 link columns + meta row.
  *
- * The 4-column grid collapses to 2 columns under 768px. Link arrays are built
- * locally via `t()` so they translate alongside everything else.
+ * The grid steps down: 4 columns on md+, 2 columns on sm, 1 column below sm.
+ * Link arrays are built locally via `t()` so they translate alongside the rest.
  */
 import Logo from '../brand/Logo.astro';
 import SocialLinks from './SocialLinks.astro';
@@ -38,11 +38,11 @@ const legal = [
 ---
 
 <footer
-  class="mt-30 py-16 pb-10 text-white/86"
+  class="mt-20 sm:mt-24 lg:mt-30 py-12 sm:py-14 lg:py-16 pb-10 text-white/86"
   style="background: linear-gradient(180deg, var(--color-navy-deep) 0%, var(--color-navy-deeper) 100%);"
 >
   <div class="shell">
-    <div class="grid gap-12 pb-12 border-b border-white/10 md:grid-cols-[1.4fr_1fr_1fr_1fr] grid-cols-2">
+    <div class="grid gap-8 sm:gap-10 md:gap-12 pb-10 sm:pb-12 border-b border-white/10 grid-cols-1 sm:grid-cols-2 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
       <div>
         <Logo invert href={lp('/')} />
         <p class="mt-3.5 text-[14px] leading-[1.6] text-white/66 max-w-[320px]">

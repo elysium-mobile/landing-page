@@ -44,9 +44,16 @@ const {
 } = Astro.props;
 ---
 
+<!--
+  Hidden on phones (`hidden sm:block`) — these floating panels need horizontal
+  room around the phone that small viewports can't spare without crashing into
+  the device chrome. They're decorative; the screen story still reads without
+  them. The `max-md:right-2` clamp keeps the visible md panels from sliding
+  off the right edge on tablets.
+-->
 <div
   class:list={[
-    'absolute z-20 bg-white rounded-2xl border border-navy/6 px-3 py-3 max-md:right-2',
+    'hidden sm:block absolute z-20 bg-white rounded-2xl border border-navy/6 px-3 py-3 max-md:right-2',
     position,
     width,
   ]}

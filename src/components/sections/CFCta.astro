@@ -14,8 +14,9 @@ const lp = (p: string) => localizedPath(Astro.currentLocale, p);
 ---
 
 <div class="shell">
+  <!-- Padding scales like the landing CTA: 24 → 32 → 40 → 48 px. -->
   <div
-    class="relative mt-16 mx-auto rounded-3xl p-12 text-white overflow-hidden text-center"
+    class="relative mt-16 mx-auto rounded-3xl p-6 sm:p-8 md:p-10 lg:p-12 text-white overflow-hidden text-center"
     style="background:linear-gradient(135deg, var(--color-navy) 0%, #2A6BAA 50%, var(--color-teal) 130%);"
   >
     <!-- Top-right mint glow — same recipe as the landing CTA but smaller. -->
@@ -24,7 +25,7 @@ const lp = (p: string) => localizedPath(Astro.currentLocale, p);
       style="background:radial-gradient(circle, rgba(165,227,216,0.30), transparent 60%);"
     ></div>
     <div class="relative z-10 max-w-3xl mx-auto">
-      <h3 class="m-0 mb-3 font-extrabold text-[28px] sm:text-[32px] tracking-[-0.02em] leading-[1.1]">
+      <h3 class="m-0 mb-3 font-extrabold text-[22px] sm:text-[28px] lg:text-[32px] tracking-[-0.02em] leading-[1.15]">
         {t('cf.cta.title')}
       </h3>
       <p class="m-0 mb-7 text-white/78 text-[16px] leading-normal max-w-130 mx-auto">

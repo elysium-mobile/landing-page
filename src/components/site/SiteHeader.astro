@@ -2,15 +2,23 @@
 /**
  * SiteHeader — sticky top bar.
  *
- * Layout: [Logo] · [Nav] · [LangSwitcher + Sign in (md+) + Demo CTA].
- * The bar is `sticky top-0` with a translucent backdrop blur so content scrolls
- * under it while staying readable. The active nav item gets a teal underline
- * via `<NavLink active>`.
+ * Layout has two responsive modes:
+ *   - md+ (≥768px): [Logo] · [Nav] · [LangSwitcher + Sign in + Demo CTA]
+ *   - <md         : [Logo] ······························· [Demo CTA + Hamburger]
+ *
+ * On mobile, tapping the hamburger reveals a drawer that holds the nav links,
+ * the language switcher, and the sign-in CTA. The drawer animates open via a
+ * `data-open` attribute (Tailwind `data-[open=true]:` variants), so there's
+ * no JS animation work — the script only flips one attribute on click.
+ *
+ * Demo CTA stays visible at every width because it's the page's primary
+ * conversion. Everything else moves to the drawer to keep the bar tidy.
  */
 import Logo from '../brand/Logo.astro';
 import NavLink from './NavLink.astro';
 import Button from '../ui/Button.astro';
 import LanguageSwitcher from './LanguageSwitcher.astro';
+import { Icon } from 'astro-icon/components';
 import { useTranslations, localizedPath } from '../../i18n/utils';
 
 interface Props {
@@ -23,21 +31,103 @@ const t = useTranslations(Astro.currentLocale);
 const lp = (path: string) => localizedPath(Astro.currentLocale, path);
 ---
 
-<header class="sticky top-0 z-50 bg-bg/80 border-b border-line-strong/60 backdrop-blur-md backdrop-saturate-[1.6]">
-  <div class="shell flex items-center justify-between h-18">
+<header
+  class="sticky top-0 z-50 bg-bg/80 border-b border-line-strong/60 backdrop-blur-md backdrop-saturate-[1.6]"
+  data-site-header
+>
+  <div class="shell flex items-center justify-between h-16 md:h-18">
     <Logo href={lp('/')} />
 
-    <!-- Hidden under 768px (Tailwind md). On mobile users get the brand and CTAs only. -->
+    <!-- Desktop nav (md+ only). -->
     <nav class="hidden md:flex items-center gap-7" aria-label="Primary">
       <NavLink href={lp('/')} active={active === 'home'}>{t('header.nav.home')}</NavLink>
       <NavLink href={lp('/#benefits')} active={active === 'benefits'}>{t('header.nav.benefits')}</NavLink>
       <NavLink href={lp('/how-it-works')} active={active === 'how-it-works'}>{t('header.nav.how')}</NavLink>
     </nav>
 
-    <div class="flex items-center gap-3">
-      <LanguageSwitcher />
-      <Button href="#" variant="ghost" class="hidden sm:inline-flex">{t('header.cta.signin')}</Button>
+    <div class="flex items-center gap-2 sm:gap-3">
+      <!-- Desktop-only secondary chrome. -->
+      <div class="hidden md:flex items-center gap-3">
+        <LanguageSwitcher />
+        <Button href="#" variant="ghost">{t('header.cta.signin')}</Button>
+      </div>
+
+      <!-- Primary CTA — visible at every width. -->
       <Button href={lp('/request-demo')} variant="primary">{t('header.cta.demo')}</Button>
+
+      <!-- Hamburger — mobile only. Toggles the drawer below. -->
+      <button
+        type="button"
+        class="md:hidden grid place-items-center w-10 h-10 rounded-lg text-navy hover:bg-navy/5 transition-colors"
+        data-mobile-toggle
+        aria-label="Menu"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+      >
+        <Icon name="menu" width={22} height={22} data-mobile-icon-open />
+        <Icon name="x" width={22} height={22} class="hidden" data-mobile-icon-close />
+      </button>
+    </div>
+  </div>
+
+  <!--
+    Mobile drawer. Sits below the bar with `max-h` collapse + opacity fade so
+    open/close animates smoothly. Hidden on md+ regardless of state.
+  -->
+  <div
+    id="mobile-nav"
+    data-mobile-drawer
+    data-open="false"
+    class="md:hidden overflow-hidden border-t border-line-strong/0 bg-bg/95 backdrop-blur-md transition-all duration-200 ease-out
+           max-h-0 opacity-0 pointer-events-none
+           data-[open=true]:max-h-105 data-[open=true]:opacity-100 data-[open=true]:pointer-events-auto data-[open=true]:border-line-strong/60"
+  >
+    <div class="shell py-4 flex flex-col gap-1">
+      <a
+        href={lp('/')}
+        class:list={['py-2.5 text-[15px] font-medium', active === 'home' ? 'text-navy' : 'text-ink']}
+      >{t('header.nav.home')}</a>
+      <a
+        href={lp('/#benefits')}
+        class:list={['py-2.5 text-[15px] font-medium', active === 'benefits' ? 'text-navy' : 'text-ink']}
+      >{t('header.nav.benefits')}</a>
+      <a
+        href={lp('/how-it-works')}
+        class:list={['py-2.5 text-[15px] font-medium', active === 'how-it-works' ? 'text-navy' : 'text-ink']}
+      >{t('header.nav.how')}</a>
+
+      <div class="mt-2 pt-3 border-t border-line flex items-center justify-between gap-3">
+        <a href="#" class="text-[14px] font-semibold text-navy underline-offset-4 hover:underline">{t('header.cta.signin')}</a>
+        <LanguageSwitcher />
+      </div>
     </div>
   </div>
 </header>
+
+<script>
+  // Open/close the mobile drawer + swap the hamburger ↔ close icon.
+  document.querySelectorAll<HTMLElement>('[data-site-header]').forEach((header) => {
+    const btn = header.querySelector<HTMLButtonElement>('[data-mobile-toggle]');
+    const drawer = header.querySelector<HTMLElement>('[data-mobile-drawer]');
+    const iconOpen = header.querySelector<HTMLElement>('[data-mobile-icon-open]');
+    const iconClose = header.querySelector<HTMLElement>('[data-mobile-icon-close]');
+    if (!btn || !drawer) return;
+
+    const setOpen = (open: boolean) => {
+      drawer.dataset.open = open ? 'true' : 'false';
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      iconOpen?.classList.toggle('hidden', open);
+      iconClose?.classList.toggle('hidden', !open);
+    };
+
+    btn.addEventListener('click', () => {
+      setOpen(drawer.dataset.open !== 'true');
+    });
+
+    // Close after tapping any link inside the drawer (so the user lands
+    // on the destination without the drawer covering it).
+    drawer.querySelectorAll('a').forEach((a) => {
+      a.addEventListener('click', () => setOpen(false));
+    });
+  });
+</script>

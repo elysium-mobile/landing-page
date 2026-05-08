@@ -14,7 +14,7 @@ import { useTranslations } from '../../i18n/utils';
 const t = useTranslations(Astro.currentLocale);
 ---
 
-<section class="cf-hero relative pt-16 pb-12 overflow-hidden text-center">
+<section class="cf-hero relative pt-10 pb-8 sm:pt-14 sm:pb-10 lg:pt-16 lg:pb-12 overflow-x-clip overflow-y-visible text-center">
   <!-- Same soft halo treatment as the landing Hero, dialed down for a calmer top. -->
   <div class="cf-glow-a"></div>
   <div class="cf-glow-b"></div>
@@ -27,7 +27,7 @@ const t = useTranslations(Astro.currentLocale);
       class="t-display fade-up delay-1 m-0 mb-6"
       set:html={t('cf.hero.title.html')}
     ></h1>
-    <p class="text-[18px] leading-[1.55] text-text-soft max-w-160 mx-auto m-0 mb-2 fade-up delay-2">
+    <p class="text-[16px] sm:text-[18px] leading-[1.55] text-text-soft max-w-160 mx-auto m-0 mb-2 fade-up delay-2">
       {t('cf.hero.body')}
     </p>
     <div class="flex justify-center">

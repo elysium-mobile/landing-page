@@ -17,12 +17,19 @@ const tabs = [
 ];
 ---
 
-<div class="mt-9 flex flex-wrap gap-2.5 fade-up delay-3">
+<!--
+  Mobile: the row scrolls horizontally so all three pills stay readable instead
+  of wrapping awkwardly under a narrow viewport. The hidden scrollbar keeps the
+  visual clean. From sm+ the row centers and wraps naturally.
+-->
+<div
+  class="mt-7 sm:mt-9 -mx-4 sm:mx-0 px-4 sm:px-0 flex sm:flex-wrap sm:justify-center overflow-x-auto sm:overflow-visible gap-2.5 fade-up delay-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+>
   {tabs.map((tab) => (
     <a
       href={tab.href}
       class:list={[
-        'inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-[13px] font-semibold transition-colors duration-150 border',
+        'inline-flex items-center gap-2 shrink-0 px-3 sm:px-4 py-2.5 rounded-full text-[12px] sm:text-[13px] font-semibold transition-colors duration-150 border whitespace-nowrap',
         tab.active
           ? 'bg-navy text-white border-navy'
           : 'bg-white/70 text-text-soft border-line-strong hover:text-navy hover:border-navy',

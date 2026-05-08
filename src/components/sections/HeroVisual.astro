@@ -4,8 +4,18 @@
  *
  * The phone is absolutely positioned (centered horizontally, top-aligned), and
  * the FloatCards anchor to specific corners around it. The wrapper height is
- * fixed (580/640px) so the absolute positions are predictable and don't depend
- * on intrinsic content size.
+ * fixed (640/680/720px) so the absolute positions are predictable and don't
+ * depend on intrinsic content size.
+ *
+ * Mobile responsiveness:
+ *   - Height reduces step-wise: 720px on lg, 680px on md, 600px on sm, and
+ *     560px below sm. The 296px phone is allowed to scale down via the
+ *     `[--phone-scale]` CSS var (used inside PhoneFrame) so it never overflows
+ *     viewports < 360px.
+ *   - The two side FloatCards (`alert`, `ai`) hide below `sm` so the phone
+ *     can sit cleanly without floating cards crowding the viewport edges. The
+ *     left `anon` card stays — it's the smallest and reinforces the "anonymous
+ *     report" idea that the rest of the page builds on.
  */
 import HeroPhone from '../phone/HeroPhone.astro';
 import FloatCard from './FloatCard.astro';
@@ -14,14 +24,29 @@ import { useTranslations } from '../../i18n/utils';
 const t = useTranslations(Astro.currentLocale);
 ---
 
-<!--
-  Height must contain the 600px PhoneFrame *plus* the floating cards that
-  overflow above and below it. h-160 (640px) gives a 40px buffer so the
-  phone never bleeds into the StatsStrip below.
--->
-<div class="hero-visual relative h-160 fade-up delay-2 max-md:h-170">
+<div class="hero-visual relative h-140 sm:h-150 md:h-160 lg:h-160 fade-up delay-2">
   <HeroPhone />
-  <FloatCard variant="anon" icon="lock" label={t('float.anon.label')} value={t('float.anon.value')} />
-  <FloatCard variant="alert" icon="alert-triangle" label={t('float.alert.label')} value={t('float.alert.value')} />
-  <FloatCard variant="ai" icon="sparkles" label={t('float.ai.label')} value={t('float.ai.value')} />
+
+  <!-- The "anon" card stays at every width; tightens its left offset on mobile. -->
+  <FloatCard
+    variant="anon"
+    icon="lock"
+    label={t('float.anon.label')}
+    value={t('float.anon.value')}
+  />
+  <!-- These two extra cards add context but compete for room on phones; hide ≤sm. -->
+  <div class="hidden sm:contents">
+    <FloatCard
+      variant="alert"
+      icon="alert-triangle"
+      label={t('float.alert.label')}
+      value={t('float.alert.value')}
+    />
+    <FloatCard
+      variant="ai"
+      icon="sparkles"
+      label={t('float.ai.label')}
+      value={t('float.ai.value')}
+    />
+  </div>
 </div>

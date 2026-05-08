@@ -21,14 +21,19 @@ const t = useTranslations(Astro.currentLocale);
 const lp = (p: string) => localizedPath(Astro.currentLocale, p);
 ---
 
-<section class="hero relative pt-16 pb-12 overflow-hidden">
+<section class="hero relative pt-10 pb-10 sm:pt-14 sm:pb-12 lg:pt-16 lg:pb-12 overflow-x-hidden overflow-y-visible">
   <!-- Two giant soft halos: top-right sky, bottom-left mint. Pure decoration. -->
   <div class="hero-glow-a"></div>
   <div class="hero-glow-b"></div>
 
+  <!--
+    Mobile-first stacking: copy first, phone visual below. On lg+, switch to
+    a 1.05fr / 1fr grid with copy on the left. Text-center on mobile keeps
+    the headline + CTAs balanced when there's no visual to anchor against.
+  -->
   <div class="shell relative z-10 grid items-center gap-10 lg:grid-cols-[1.05fr_1fr] grid-cols-1">
-    <div>
-      <div class="fade-up">
+    <div class="text-center lg:text-left">
+      <div class="fade-up flex justify-center lg:justify-start">
         <HeroEyebrow>{t('hero.eyebrow')}</HeroEyebrow>
       </div>
       <!-- Title HTML contains <em class="gradient-em"> markers for the gradient text. -->
@@ -36,10 +41,10 @@ const lp = (p: string) => localizedPath(Astro.currentLocale, p);
         class="t-display fade-up delay-1 m-0 mb-6"
         set:html={t('hero.title.html')}
       ></h1>
-      <p class="text-[18px] leading-[1.55] text-text-soft max-w-130 m-0 mb-8 fade-up delay-2">
+      <p class="text-[16px] sm:text-[18px] leading-[1.55] text-text-soft max-w-130 mx-auto lg:mx-0 m-0 mb-8 fade-up delay-2">
         {t('hero.subtitle')}
       </p>
-      <div class="flex flex-wrap gap-3 items-center fade-up delay-3">
+      <div class="flex flex-wrap gap-3 items-center justify-center lg:justify-start fade-up delay-3">
         <Button href={lp('/request-demo')} variant="primary" size="lg">
           {t('hero.cta.demo')}
           <Icon name="arrow-right" width={16} height={16} />

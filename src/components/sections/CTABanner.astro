@@ -20,8 +20,14 @@ const lp = (p: string) => localizedPath(Astro.currentLocale, p);
 ---
 
 <div class="shell" id="demo">
+  <!--
+    Padding scales: 24/32/40/56 px from xs → lg. The big 56px (p-14) used to
+    apply at every width and looked oversized on phones; the new ramp keeps
+    the desktop generosity while giving phones breathing-room sized to the
+    typography (~24px gutters at the headline scale).
+  -->
   <div
-    class="relative mt-16 mx-auto rounded-3xl p-14 text-white overflow-hidden"
+    class="relative mt-16 mx-auto rounded-3xl p-6 sm:p-8 md:p-10 lg:p-14 text-white overflow-hidden"
     style="background:linear-gradient(135deg, var(--color-navy) 0%, #2A6BAA 50%, var(--color-teal) 130%);"
   >
     <!-- Top-right mint highlight; pointer-events:none ensures clicks pass through. -->
@@ -29,16 +35,16 @@ const lp = (p: string) => localizedPath(Astro.currentLocale, p);
       class="pointer-events-none absolute -top-25 -right-25 w-90 h-90"
       style="background:radial-gradient(circle, rgba(165,227,216,0.30), transparent 60%);"
     ></div>
-    <div class="relative z-10 grid gap-8 items-center grid-cols-1 lg:grid-cols-[1.4fr_1fr]">
-      <div>
-        <h3 class="m-0 mb-3 font-extrabold text-[32px] tracking-[-0.02em] leading-[1.1]">
+    <div class="relative z-10 grid gap-6 lg:gap-8 items-center grid-cols-1 lg:grid-cols-[1.4fr_1fr]">
+      <div class="text-center lg:text-left">
+        <h3 class="m-0 mb-3 font-extrabold text-[24px] sm:text-[28px] lg:text-[32px] tracking-[-0.02em] leading-[1.15]">
           {t('cta.title')}
         </h3>
-        <p class="m-0 text-white/78 text-[16px] leading-normal max-w-130">
+        <p class="m-0 text-white/78 text-[15px] sm:text-[16px] leading-normal max-w-130 mx-auto lg:mx-0">
           {t('cta.body')}
         </p>
       </div>
-      <div class="flex gap-3 flex-wrap lg:justify-end">
+      <div class="flex gap-3 flex-wrap justify-center lg:justify-end">
         <Button href={lp('/request-demo')} variant="on-dark" size="lg">
           {t('cta.demo')}
           <Icon name="arrow-right" width={16} height={16} />

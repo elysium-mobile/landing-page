@@ -53,11 +53,11 @@ const stageBg: Record<Theme, string> = {
 };
 ---
 
-<section class="py-20 relative" id={id}>
+<section class="py-12 sm:py-16 lg:py-20 relative overflow-x-clip" id={id}>
   <div class="shell">
     <div
       class:list={[
-        'grid items-center gap-12 lg:gap-16 grid-cols-1 lg:grid-cols-[1fr_1fr]',
+        'grid items-center gap-8 sm:gap-12 lg:gap-16 grid-cols-1 lg:grid-cols-[1fr_1fr]',
         flip && 'lg:[direction:rtl]',
       ]}
     >
@@ -69,15 +69,20 @@ const stageBg: Record<Theme, string> = {
           </span>
           {eyebrow}
         </div>
-        <h2 class="font-extrabold leading-[1.1] tracking-[-0.015em] text-navy m-0 mb-5" style="font-size:clamp(28px,3.2vw,40px);">
+        <h2 class="font-extrabold leading-[1.15] tracking-[-0.015em] text-navy m-0 mb-5" style="font-size:clamp(22px,4.2vw,40px);">
           {title}
         </h2>
-        <p class="text-[16px] leading-[1.6] text-text-soft m-0 mb-2 max-w-130">{body}</p>
+        <p class="text-[15px] sm:text-[16px] leading-[1.6] text-text-soft m-0 mb-2 max-w-130">{body}</p>
         <slot name="steps" />
       </div>
 
-      <!-- Stage column — phone + side panels. -->
-      <div class="lg:[direction:ltr] relative flex items-center justify-center min-h-[640px]">
+      <!--
+        Stage column — phone + side panels. Min-height shrinks on phones because
+        on mobile the layout stacks copy-above-stage and the rigid 640px wastes
+        vertical real estate. We let the phone determine the column height
+        (~620–640px from PhoneFrame) on small viewports.
+      -->
+      <div class="lg:[direction:ltr] relative flex items-center justify-center min-h-[600px] sm:min-h-[620px] lg:min-h-[640px]">
         <!-- Stage glow sits behind the phone; -inset-8 gives it slight overflow. -->
         <div class="absolute inset-0 -m-6 rounded-4xl z-0" style={`background:${stageBg[theme]};`}></div>
         <div class="relative z-10">

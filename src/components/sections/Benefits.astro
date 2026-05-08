@@ -23,7 +23,7 @@ const t = useTranslations(Astro.currentLocale);
 const lp = (p: string) => localizedPath(Astro.currentLocale, p);
 ---
 
-<section class="py-24 relative" id="benefits">
+<section class="py-14 sm:py-20 lg:py-24 relative" id="benefits">
   <div class="shell">
     <SectionLead eyebrow={t('benefits.eyebrow')} title={t('benefits.title')}>
       {t('benefits.body')}
