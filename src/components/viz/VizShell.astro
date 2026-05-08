@@ -1,0 +1,42 @@
+---
+/**
+ * VizShell — wrapper around each value-block visualization.
+ *
+ * Provides:
+ *   1. A min-height so the visual column doesn't collapse when the viz is short.
+ *   2. A radial-gradient backdrop (`viz-bg` equivalent) that sits behind the
+ *      content via `-inset-8` so it overflows the card slightly.
+ *   3. A `maxWidth` cap so wide content (HR dashboard) and narrow content (AI
+ *      chat) can both look balanced.
+ *
+ * Each `theme` selects a different two-stop radial pair tuned to the value
+ * block's accent (mint+sky for employee, navy+warning for HR, sky+teal for AI).
+ */
+type Theme = 'employee' | 'hr' | 'ai';
+
+interface Props {
+  theme?: Theme;
+  /** Outer max-width in px; defaults to 460. */
+  maxWidth?: number;
+}
+
+const { theme = 'employee', maxWidth = 460 } = Astro.props;
+
+// Backdrop gradient strings per theme. Two stacked radial-gradients per backdrop.
+const bgs: Record<Theme, string> = {
+  employee:
+    'radial-gradient(circle at 30% 20%, rgba(165,227,216,0.4), transparent 60%), radial-gradient(circle at 80% 80%, rgba(77,168,218,0.20), transparent 60%)',
+  hr:
+    'radial-gradient(circle at 70% 20%, rgba(28,75,120,0.16), transparent 60%), radial-gradient(circle at 20% 80%, rgba(232,168,56,0.18), transparent 60%)',
+  ai:
+    'radial-gradient(circle at 30% 30%, rgba(77,168,218,0.22), transparent 60%), radial-gradient(circle at 80% 70%, rgba(25,164,161,0.20), transparent 60%)',
+};
+---
+
+<div class="relative min-h-115 flex items-center justify-center">
+  <div class="relative w-full" style={`max-width:${maxWidth}px;`}>
+    <!-- Soft glow that sits behind the actual viz content. -->
+    <div class="absolute -inset-8 rounded-4xl z-0" style={`background:${bgs[theme]};`}></div>
+    <slot />
+  </div>
+</div>

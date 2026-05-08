@@ -1,0 +1,29 @@
+---
+/**
+ * StatsStrip — white card with 4 stats that overlaps the hero by `-mt-12`.
+ *
+ * The negative top margin pulls the card into the hero's bottom edge, creating
+ * a "broken plane" composition that anchors hero + stats as one block. Card is
+ * elevated by `--shadow-card` and bordered to read against the page bg.
+ */
+import Stat from './Stat.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations(Astro.currentLocale);
+
+const stats = [
+  { value: t('stats.retention.value'), label: t('stats.retention.label') },
+  { value: t('stats.reports.value'), label: t('stats.reports.label') },
+  { value: t('stats.support.value'), label: t('stats.support.label') },
+  { value: t('stats.anonymity.value'), label: t('stats.anonymity.label') },
+];
+---
+
+<div class="shell">
+  <div
+    class="grid gap-3 bg-white rounded-chip p-7 mt-8 relative z-2 border border-line grid-cols-2 sm:grid-cols-4"
+    style="box-shadow:var(--shadow-card);"
+  >
+    {stats.map((s, i) => <Stat value={s.value} label={s.label} divider={i !== stats.length - 1} />)}
+  </div>
+</div>

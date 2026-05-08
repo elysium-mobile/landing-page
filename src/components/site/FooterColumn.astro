@@ -1,0 +1,38 @@
+---
+/**
+ * FooterColumn — one column of titled links inside SiteFooter.
+ *
+ * Pure presentation: parent decides the title and link list (already localized).
+ */
+interface Link {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  /** Section heading. Rendered uppercase. */
+  title: string;
+  /** Anchor list. Already localized by the parent. */
+  links: Link[];
+}
+
+const { title, links } = Astro.props;
+---
+
+<div>
+  <h4 class="text-[12px] font-semibold tracking-[0.18em] uppercase text-white/55 mb-4.5">
+    {title}
+  </h4>
+  <ul class="list-none m-0 p-0 flex flex-col gap-2.5">
+    {links.map((l) => (
+      <li>
+        <a
+          href={l.href}
+          class="text-[14px] text-white/78 transition-colors duration-150 hover:text-mint"
+        >
+          {l.label}
+        </a>
+      </li>
+    ))}
+  </ul>
+</div>

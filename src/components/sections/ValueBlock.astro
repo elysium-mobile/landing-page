@@ -1,0 +1,63 @@
+---
+/**
+ * ValueBlock — reusable 2-column "copy + visual" block.
+ *
+ * Three slots: `features`, `link`, and `viz`. The copy column is built from
+ * eyebrow / title / body props because they're always single strings; the
+ * three slots cover the parts that vary in shape and have child components.
+ *
+ * `flip` reverses the column order on lg+ via `direction: rtl` on the grid
+ * (and `ltr` on each child to undo the inheritance). This avoids duplicating
+ * the markup just to swap columns. Below lg the layout always stacks copy
+ * over visual, so the flip only matters on wide screens.
+ */
+type Theme = 'employee' | 'hr' | 'ai';
+
+interface Props {
+  /** Small uppercase tag. */
+  eyebrow: string;
+  /** Block heading. */
+  title: string;
+  /** Lead paragraph. */
+  body: string;
+  /** Picks the eyebrow colour (teal / navy / sky). */
+  theme?: Theme;
+  /** Reverse the copy/visual column order on lg+. */
+  flip?: boolean;
+}
+
+const { eyebrow, title, body, theme = 'employee', flip = false } = Astro.props;
+
+// Eyebrow colour per theme. The dot inherits via `bg-currentColor`.
+const eyebrowColor: Record<Theme, string> = {
+  employee: 'text-teal',
+  hr: 'text-navy',
+  ai: 'text-sky',
+};
+---
+
+<div
+  class:list={[
+    'grid items-center gap-12 lg:gap-20 py-14 grid-cols-1 lg:grid-cols-2',
+    flip && 'lg:[direction:rtl]',
+  ]}
+>
+  <!-- Copy column. lg:[direction:ltr] resets the rtl flip locally. -->
+  <div class="lg:[direction:ltr]">
+    <div class={`inline-flex items-center gap-2 text-[12px] font-semibold tracking-[0.16em] uppercase ${eyebrowColor[theme]} mb-4.5`}>
+      <span class="w-2 h-2 rounded-full" style="background:currentColor"></span>
+      {eyebrow}
+    </div>
+    <h2 class="font-extrabold leading-[1.1] tracking-[-0.015em] text-navy m-0 mb-5" style="font-size:clamp(28px,3.2vw,40px);">
+      {title}
+    </h2>
+    <p class="text-[16px] leading-[1.6] text-text-soft m-0 mb-6 max-w-120">{body}</p>
+    <slot name="features" />
+    <slot name="link" />
+  </div>
+
+  <!-- Visual column. -->
+  <div class="lg:[direction:ltr]">
+    <slot name="viz" />
+  </div>
+</div>

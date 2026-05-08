@@ -1,0 +1,14 @@
+---
+/**
+ * AIViz — composes the AIChat + AISide combo at a narrower max-width (420px)
+ * since the chat itself is a tall component.
+ */
+import VizShell from './VizShell.astro';
+import AIChat from './AIChat.astro';
+import AISide from './AISide.astro';
+---
+
+<VizShell theme="ai" maxWidth={420}>
+  <AIChat />
+  <AISide />
+</VizShell>

@@ -1,0 +1,24 @@
+---
+/**
+ * `/request-demo` — Spanish placeholder page (default locale).
+ *
+ * Reached when users click any "Solicitar Demo" CTA across the site (header,
+ * hero, CTA banner, how-it-works closing CTA). The real demo flow isn't built
+ * yet, so this page sets the right expectation: native iOS/Android/Flutter
+ * apps are still being polished.
+ *
+ * Composition is intentionally minimal — DemoSplash already covers eyebrow,
+ * title, body, list, CTAs, and the placeholder phone.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/site/SiteHeader.astro';
+import SiteFooter from '../components/site/SiteFooter.astro';
+import DemoSplash from '../components/sections/DemoSplash.astro';
+import { useTranslations } from '../i18n/utils';
+
+const t = useTranslations(Astro.currentLocale);
+---
+
+<BaseLayout title={t('demo.meta.title')} description={t('demo.meta.description')}>
+  <DemoSplash />
+</BaseLayout>

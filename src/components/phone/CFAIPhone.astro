@@ -1,0 +1,188 @@
+---
+/**
+ * CFAIPhone — phone screen for Scenario 2 of how-it-works.
+ *
+ * Differs from the landing's `AIChat` in two ways:
+ *   1. It lives inside a PhoneFrame (full device chrome).
+ *   2. It progressively *reveals* messages instead of resetting the buffer
+ *      every cycle — feels like a conversation unfolding rather than looping.
+ *
+ * Implementation note: every message in `seq` is rendered server-side as a
+ * sibling node with `data-step="i"` and `hidden` by default. The client tick
+ * just removes the `hidden` attribute on more nodes — there's *no* innerHTML
+ * mutation in the loop. That matters because rewriting innerHTML every 1.7s
+ * forces a layout shift in the parent, which made nearby `<img loading="lazy">`
+ * tags (the footer Elysium logo) keep re-evaluating and re-fetching in dev.
+ *
+ * The reveal counter advances every 1.7s, capped at the sequence length,
+ * then resets to a small starting value. While it changes, we broadcast
+ * `softwork:scenario-step` so the side ScenarioStepList highlights the
+ * matching bullet.
+ *
+ * Sequence kinds (rendered as templates in the markup below):
+ *   - day:    centered timestamp divider.
+ *   - user:   right-aligned sky bubble.
+ *   - bot:    left-aligned paper bubble.
+ *   - typing: bouncing dots placeholder.
+ *   - sugg:   3 horizontal pill suggestions.
+ */
+import { Icon } from 'astro-icon/components';
+import PhoneFrame from './PhoneFrame.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations(Astro.currentLocale);
+
+type Step =
+  | { kind: 'day' | 'user' | 'bot'; text: string }
+  | { kind: 'typing' }
+  | { kind: 'sugg'; items: [string, string, string] };
+
+const seq: Step[] = [
+  { kind: 'day', text: t('cf.ai.day') },
+  { kind: 'user', text: t('cf.ai.user1') },
+  { kind: 'bot', text: t('cf.ai.bot1') },
+  { kind: 'user', text: t('cf.ai.user2') },
+  { kind: 'typing' },
+  { kind: 'bot', text: t('cf.ai.bot2') },
+  { kind: 'sugg', items: [t('cf.ai.sugg1'), t('cf.ai.sugg2'), t('cf.ai.sugg3')] },
+];
+---
+
+<div data-cf-ai-phone>
+  <PhoneFrame>
+    <div class="flex flex-col flex-1 px-3.5 pb-3 pt-2 bg-white">
+      <!-- Header: avatar + name + status. -->
+      <div class="flex items-center gap-2.5 pb-3 mb-2 border-b border-line">
+        <div class="relative w-9 h-9 rounded-2 grid place-items-center text-white" style="background:linear-gradient(135deg, var(--color-sky), var(--color-teal));">
+          <Icon name="sparkles" width={16} height={16} />
+        </div>
+        <div>
+          <div class="text-[13px] font-bold text-navy leading-tight">{t('cf.ai.name')}</div>
+          <div class="text-[10px] text-text-soft inline-flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-teal"></span> {t('cf.ai.status')}
+          </div>
+        </div>
+      </div>
+
+      <!--
+        Pre-rendered messages. The script flips `hidden` on each by index
+        rather than rewriting innerHTML. Each child carries `data-step={i}`
+        so the script can look them up cheaply.
+      -->
+      <div
+        class="flex flex-col gap-2 flex-1 overflow-hidden"
+        data-cf-ai-msgs
+        data-len={seq.length}
+      >
+        {seq.map((m, i) => {
+          if (m.kind === 'day') {
+            return (
+              <div data-step={i} hidden class="self-center text-[10px] text-text-mute font-semibold tracking-widest uppercase my-1">
+                {m.text}
+              </div>
+            );
+          }
+          if (m.kind === 'typing') {
+            return (
+              <div data-step={i} data-kind="typing" hidden class="self-start bg-paper px-3 py-2 rounded-2xl rounded-bl-sm inline-flex gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-text-mute" style="animation:bounce-dot 1.2s infinite;"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-text-mute" style="animation:bounce-dot 1.2s infinite 0.15s;"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-text-mute" style="animation:bounce-dot 1.2s infinite 0.3s;"></span>
+              </div>
+            );
+          }
+          if (m.kind === 'sugg') {
+            return (
+              <div data-step={i} hidden class="self-start flex flex-wrap gap-1.5 mt-1">
+                {m.items.map((it) => (
+                  <button class="px-2.5 py-1 rounded-full text-[11px] bg-sky/10 text-sky font-semibold border border-sky/20 hover:bg-sky/20 transition-colors">
+                    {it}
+                  </button>
+                ))}
+              </div>
+            );
+          }
+          // user / bot bubble
+          const tone =
+            m.kind === 'user'
+              ? 'self-end bg-sky text-white rounded-br-[4px]'
+              : 'self-start bg-paper text-ink rounded-bl-[4px]';
+          return (
+            <div data-step={i} hidden class:list={['max-w-[80%] px-3 py-2 rounded-2xl text-[12px] leading-snug', tone]}>
+              {m.text}
+            </div>
+          );
+        })}
+      </div>
+
+      <!-- Static pseudo-input pinned at the bottom. -->
+      <div class="mt-3 flex items-center gap-2 bg-paper rounded-full pl-3.5 pr-1 py-1">
+        <span class="flex-1 text-[12px] text-text-mute">{t('cf.ai.input')}</span>
+        <button type="button" aria-label="Send" class="w-7 h-7 rounded-full bg-sky text-white grid place-items-center hover:bg-teal transition-colors">
+          <Icon name="send" width={12} height={12} />
+        </button>
+      </div>
+    </div>
+  </PhoneFrame>
+</div>
+
+<script>
+  // For each AI phone on the page, manage its reveal state by toggling the
+  // `hidden` attribute on pre-rendered message nodes. No innerHTML rewriting,
+  // so no layout-shift cascade and no surrounding lazy images get re-fetched.
+  document.querySelectorAll<HTMLElement>('[data-cf-ai-msgs]').forEach((root) => {
+    const total = parseInt(root.dataset.len ?? '0', 10);
+    const items = Array.from(root.querySelectorAll<HTMLElement>('[data-step]'));
+    const start = 2; // mirrors the prototype's initial reveal
+    let revealed = start;
+    let manual = false; // flips true on user click; pauses auto-reveal
+
+    /** Show messages [0..revealed), with one twist: typing dots are kept
+     *  visible only while they're the *tip* of the reveal. Once the bot's
+     *  bubble arrives behind the dots, the dots hide — otherwise they linger
+     *  permanently above their reply. */
+    const paint = () => {
+      items.forEach((el, i) => {
+        const isTyping = el.dataset.kind === 'typing';
+        const isTip = i === revealed - 1;
+        const visible = isTyping ? (i < revealed && isTip) : i < revealed;
+        if (visible) el.removeAttribute('hidden');
+        else el.setAttribute('hidden', '');
+      });
+    };
+
+    // Map the reveal counter to ScenarioStep indices (0..3).
+    const stepFromRevealed = () => Math.max(0, Math.min(3, Math.floor(revealed / 2) - 1));
+    // Inverse: clicking step N reveals (N+1)*2 messages. Step 3 jumps to full.
+    const revealedFromStep = (step: number) =>
+      step >= 3 ? total : Math.min(total, (step + 1) * 2);
+
+    const broadcastStep = () => {
+      document.dispatchEvent(
+        new CustomEvent('softwork:scenario-step', {
+          detail: { scenario: 'ai', step: stepFromRevealed(), origin: 'phone' },
+        })
+      );
+    };
+
+    // Listen for clicks in the matching ScenarioStepList. Jump and pause.
+    document.addEventListener('softwork:scenario-step', (e) => {
+      const d = (e instanceof CustomEvent ? e.detail : null) || {};
+      if (d.scenario !== 'ai' || d.origin !== 'list') return;
+      if (typeof d.step !== 'number') return;
+      manual = true;
+      revealed = revealedFromStep(d.step);
+      paint();
+    });
+
+    paint();
+    broadcastStep();
+
+    setInterval(() => {
+      if (document.hidden || manual) return;
+      revealed = revealed >= total ? start : revealed + 1;
+      paint();
+      broadcastStep();
+    }, 1700);
+  });
+</script>

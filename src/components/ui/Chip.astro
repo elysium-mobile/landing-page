@@ -1,0 +1,40 @@
+---
+/**
+ * Chip — small uppercase label (badge / tag).
+ *
+ * The `compact` variant (22px tall, 8px x-padding) is used inside the phone
+ * mock where vertical room is tight. Default is the regular 28px chip used in
+ * the rest of the page.
+ *
+ * Tones are pre-tinted for the four brand colors plus warning/danger; pick
+ * `*-soft` variants when the chip needs to sit on a white card without
+ * overpowering surrounding text.
+ */
+type Variant = 'mint' | 'sky-soft' | 'navy-soft' | 'teal-soft' | 'warning-soft' | 'danger-soft';
+
+interface Props {
+  variant?: Variant;
+  class?: string;
+  /** Use the 22px-tall variant for cramped contexts (phone mock). */
+  compact?: boolean;
+}
+
+const { variant = 'mint', class: extra = '', compact = false } = Astro.props;
+
+const base =
+  'inline-flex items-center gap-1.5 rounded-[var(--radius-chip)] font-medium uppercase tracking-[0.04em] text-[11px]';
+const sizing = compact ? 'h-[22px] px-2' : 'h-7 px-3';
+
+const tones: Record<Variant, string> = {
+  mint: 'bg-mint text-teal-deep',
+  'sky-soft': 'bg-sky/15 text-navy',
+  'navy-soft': 'bg-navy/10 text-navy',
+  'teal-soft': 'bg-teal/10 text-teal-deep',
+  'warning-soft': 'bg-warning/15 text-warning-deep',
+  'danger-soft': 'bg-danger/12 text-danger-deep',
+};
+---
+
+<span class={`${base} ${sizing} ${tones[variant]} ${extra}`.trim()}>
+  <slot />
+</span>

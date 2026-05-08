@@ -1,0 +1,26 @@
+---
+/**
+ * HeroEyebrow — small pill above the hero headline.
+ *
+ * Visually: backdrop-blurred white pill, faint navy border, animated Pulse
+ * icon to the left, slot content (the "live" message) to the right.
+ *
+ * `icon` is forwarded to Pulse so different pages can theme the eyebrow:
+ *   - landing → 'heart' (default — "live" feeling)
+ *   - how-it-works → 'eye' (watch the flow)
+ */
+import Pulse from './Pulse.astro';
+
+interface Props {
+  /** Local-icon name forwarded to the inner Pulse. */
+  icon?: string;
+}
+
+const { icon = 'heart' } = Astro.props;
+---
+
+<div class="inline-flex items-center gap-2.5 py-2 pl-2 pr-3.5 rounded-full bg-white/70 border
+ border-navy/12 text-[12px] font-semibold tracking-[0.04em] text-navy backdrop-blur-md mb-7">
+  <Pulse icon={icon} />
+  <slot />
+</div>

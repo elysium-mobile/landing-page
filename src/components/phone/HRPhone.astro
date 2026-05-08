@@ -1,0 +1,224 @@
+---
+/**
+ * HRPhone — Scenario 3's mobile HR-app preview.
+ *
+ * Composes the entire HR mobile app into one scrollable phone screen:
+ *   - Top bar with greeting + bell badge
+ *   - Time-range filter pills
+ *   - 2×2 KPI grid               ← step 0 highlight target
+ *   - Mood line chart card       ← step 0 highlight target
+ *   - Active alerts card         ← step 1 highlight target
+ *   - Climate-by-team card       ← step 2 highlight target
+ *   - Bottom tab bar
+ *
+ * Interactive: listens for `softwork:scenario-step` events with
+ * `scenario === 'dashboard'` and:
+ *   1. Highlights the matching card via a navy ring + soft lift.
+ *   2. Smooth-scrolls the (vertically-overflowing) body so the highlighted
+ *      card is in view inside the phone frame.
+ *
+ * The corresponding ScenarioStepList is set to auto-cycle every 3500ms on
+ * the Scenario3 wiring, so the dashboard idles through Pulso → Alertas →
+ * Equipos. Clicking a step in the list cancels the cycle (existing list
+ * behavior) and jumps the phone to that section.
+ */
+import { Icon } from 'astro-icon/components';
+import PhoneFrame from './PhoneFrame.astro';
+import Chip from '../ui/Chip.astro';
+import HRPhoneKpi from '../viz/HRPhoneKpi.astro';
+import HRPhoneAlert from '../viz/HRPhoneAlert.astro';
+import HRPhoneTeamBar from '../viz/HRPhoneTeamBar.astro';
+import HRLineChart from '../viz/HRLineChart.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations(Astro.currentLocale);
+
+const filters = [
+  { key: '7d', label: t('cf.hr.filter.7d') },
+  { key: '30d', label: t('cf.hr.filter.30d'), active: true },
+  { key: 'q', label: t('cf.hr.filter.q') },
+  { key: 'y', label: t('cf.hr.filter.y') },
+];
+
+const tabs = [
+  { key: 'pulse', icon: 'bar-chart', label: t('cf.hr.tab.pulse'), active: true },
+  { key: 'alerts', icon: 'alert-triangle', label: t('cf.hr.tab.alerts') },
+  { key: 'reports', icon: 'shield', label: t('cf.hr.tab.reports') },
+  { key: 'teams', icon: 'users', label: t('cf.hr.tab.teams') },
+];
+
+const teams = [
+  { name: t('cf.hr.team.pm'), pct: 88 },
+  { name: t('cf.hr.team.mkt'), pct: 84 },
+  { name: t('cf.hr.team.eng'), pct: 78 },
+  { name: t('cf.hr.team.sales'), pct: 71 },
+  { name: t('cf.hr.team.design'), pct: 42 },
+];
+
+// Shared classes for highlight-able cards. The data-active-card attribute
+// (toggled by the script) drives the navy ring + slight lift.
+const highlightCard =
+  'transition-all duration-300 data-[active-card=true]:ring-2 data-[active-card=true]:ring-navy/40 data-[active-card=true]:bg-white data-[active-card=true]:shadow-[0_8px_24px_rgba(28,75,120,0.18)] data-[active-card=true]:-translate-y-0.5';
+---
+
+<PhoneFrame>
+  <div class="flex flex-col flex-1 bg-white relative overflow-hidden" data-hr-phone>
+    <!-- Top bar: greeting + title + bell with notification dot. -->
+    <div class="flex items-center justify-between px-4 pt-2 pb-3">
+      <div>
+        <div class="text-[10px] uppercase tracking-widest text-text-soft font-semibold">{t('cf.hr.greeting')}</div>
+        <div class="text-[16px] font-bold text-navy">{t('cf.hr.title')}</div>
+      </div>
+      <button type="button" class="relative w-9 h-9 rounded-full bg-paper grid place-items-center text-navy" aria-label="Notifications">
+        <Icon name="bell" width={16} height={16} />
+        <span class="absolute -top-0.5 -right-0.5 min-w-4 h-4 rounded-full bg-danger text-white text-[9px] font-bold grid place-items-center px-1">3</span>
+      </button>
+    </div>
+
+    <!-- Filter chips. -->
+    <div class="flex gap-1.5 px-4 mb-2">
+      {filters.map((f) => (
+        <span
+          class:list={[
+            'inline-flex items-center px-2.5 h-7 rounded-full text-[11px] font-semibold transition-colors duration-150',
+            f.active ? 'bg-navy text-white' : 'bg-paper text-text-soft',
+          ]}
+        >
+          {f.label}
+        </span>
+      ))}
+    </div>
+
+    <!--
+      Scrolling body. overflow-y-auto + scroll-smooth + scroll-pt-2 lets the
+      script smooth-scroll a card into view. Section anchors are referenced
+      by the script via data-section.
+    -->
+    <div
+      class="flex-1 overflow-y-auto overflow-x-hidden px-3 pb-20 scroll-smooth scroll-pt-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      data-hr-body
+    >
+      <!-- KPI grid (section "kpis", step 0). -->
+      <div
+        class:list={['rounded-2xl p-1 -m-1 mb-3', highlightCard]}
+        data-section="kpis"
+        data-active-card="false"
+      >
+        <div class="grid grid-cols-2 gap-2">
+          <HRPhoneKpi label={t('cf.hr.kpi.enps')} value="+42" delta="6" trend="up" direction="good" />
+          <HRPhoneKpi label={t('cf.hr.kpi.mood')} value="7.6" delta="0.3" trend="up" direction="good" />
+          <HRPhoneKpi label={t('cf.hr.kpi.turnover')} value="2.1%" delta="0.8" trend="down" direction="good" />
+          <HRPhoneKpi label={t('cf.hr.kpi.reports')} value="17" delta="4" trend="up" direction="bad" tone="warn" />
+        </div>
+      </div>
+
+      <!-- Mood line chart (also part of step 0 — "pulso vivo"). -->
+      <div
+        class:list={['bg-paper rounded-xl p-3 mb-3', highlightCard]}
+        data-section="mood"
+        data-active-card="false"
+      >
+        <div class="flex items-center justify-between mb-1">
+          <h4 class="m-0 text-[12px] font-bold text-navy">{t('cf.hr.card.mood.title')}</h4>
+          <Chip variant="teal-soft" compact>+0.3</Chip>
+        </div>
+        <HRLineChart />
+      </div>
+
+      <!-- Active alerts (step 1). -->
+      <div
+        class:list={['bg-paper rounded-xl p-3 mb-3', highlightCard]}
+        data-section="alerts"
+        data-active-card="false"
+      >
+        <div class="flex items-center justify-between mb-2">
+          <h4 class="m-0 text-[12px] font-bold text-navy">{t('cf.hr.alerts.title')}</h4>
+          <Chip variant="danger-soft" compact>{t('cf.hr.alerts.new')}</Chip>
+        </div>
+        <HRPhoneAlert tone="danger" title={t('cf.hr.alert1.title')} sub={t('cf.hr.alert1.sub')} />
+        <HRPhoneAlert tone="warn" title={t('cf.hr.alert2.title')} sub={t('cf.hr.alert2.sub')} />
+        <HRPhoneAlert tone="info" title={t('cf.hr.alert3.title')} sub={t('cf.hr.alert3.sub')} />
+      </div>
+
+      <!-- Team climate (step 2 — "decide y delega"). -->
+      <div
+        class:list={['bg-paper rounded-xl p-3', highlightCard]}
+        data-section="teams"
+        data-active-card="false"
+      >
+        <h4 class="m-0 mb-2 text-[12px] font-bold text-navy">{t('cf.hr.team.title')}</h4>
+        {teams.map((tm) => <HRPhoneTeamBar name={tm.name} pct={tm.pct} />)}
+      </div>
+    </div>
+
+    <!-- Bottom tab bar — pinned over the body via absolute. -->
+    <div class="absolute left-0 right-0 bottom-0 grid grid-cols-4 bg-white border-t border-line py-1.5" data-hr-tabs>
+      {tabs.map((tab, i) => (
+        <button
+          type="button"
+          data-tab-index={i}
+          data-active={tab.active ? 'true' : 'false'}
+          class="flex flex-col items-center gap-0.5 py-1.5 transition-colors text-text-mute data-[active=true]:text-navy"
+        >
+          <Icon name={tab.icon} width={16} height={16} />
+          <span class="text-[9px] font-semibold">{tab.label}</span>
+        </button>
+      ))}
+    </div>
+  </div>
+</PhoneFrame>
+
+<script>
+  // Map ScenarioStepList step → list of section names to highlight.
+  // Step 0 covers two sections (KPIs + Mood) since "Pulso vivo" is about
+  // the live overview, not just one card.
+  const STEP_SECTIONS: Record<number, string[]> = {
+    0: ['kpis', 'mood'],
+    1: ['alerts'],
+    2: ['teams'],
+  };
+
+  // Step → which bottom tab to highlight (best-fit mapping).
+  const STEP_TAB: Record<number, number> = { 0: 0, 1: 1, 2: 3 };
+
+  document.querySelectorAll<HTMLElement>('[data-hr-phone]').forEach((root) => {
+    const body = root.querySelector<HTMLElement>('[data-hr-body]');
+    const sections = Array.from(root.querySelectorAll<HTMLElement>('[data-section]'));
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-tab-index]'));
+
+    const apply = (step: number) => {
+      const targets = STEP_SECTIONS[step] ?? [];
+
+      // Highlight the matching card(s); reset the rest.
+      sections.forEach((sec) => {
+        const name = sec.dataset.section ?? '';
+        sec.dataset.activeCard = targets.includes(name) ? 'true' : 'false';
+      });
+
+      // Mirror the active step on the bottom tab bar so the navigation
+      // story matches the dashboard story.
+      const tabIdx = STEP_TAB[step] ?? 0;
+      tabs.forEach((t, i) => {
+        t.dataset.active = i === tabIdx ? 'true' : 'false';
+      });
+
+      // Smooth-scroll the first highlighted card into view inside the body.
+      // We use scrollTop math instead of `scrollIntoView` because the latter
+      // would also scroll the outer page on some browsers.
+      if (body && targets.length > 0) {
+        const first = sections.find((s) => s.dataset.section === targets[0]);
+        if (first) {
+          const top = first.offsetTop - 8; // small breathing room
+          body.scrollTo({ top, behavior: 'smooth' });
+        }
+      }
+    };
+
+    document.addEventListener('softwork:scenario-step', (e) => {
+      const d = (e instanceof CustomEvent ? e.detail : null) || {};
+      if (d.scenario !== 'dashboard') return;
+      if (typeof d.step !== 'number') return;
+      apply(d.step);
+    });
+  });
+</script>

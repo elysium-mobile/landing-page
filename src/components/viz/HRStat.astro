@@ -1,0 +1,42 @@
+---
+/**
+ * HRStat — single KPI cell inside HRDashboard.
+ *
+ * Layout: small uppercase label, big number, then a delta with an up/down
+ * trend icon. `direction` decides the colour (success vs danger) of the delta;
+ * `trend` decides which trend-arrow icon is rendered.
+ *
+ * `direction` and `trend` are decoupled because a falling number can still be
+ * "positive direction" (e.g. turnover ↓ is good).
+ */
+import { Icon } from 'astro-icon/components';
+
+type Direction = 'up' | 'down';
+
+interface Props {
+  /** Small uppercase label. */
+  label: string;
+  /** Big-number value. */
+  value: string;
+  /** Delta number (no sign). */
+  delta: string;
+  /** Sign of the delta — picks colour. */
+  direction?: Direction;
+  /** Which arrow icon to render — picks the trending-* glyph. */
+  trend?: 'up' | 'down';
+}
+
+const { label, value, delta, direction = 'up', trend = 'up' } = Astro.props;
+const color = direction === 'up' ? 'text-teal' : 'text-danger';
+const icon = trend === 'up' ? 'trending-up' : 'trending-down';
+---
+
+<div class="bg-paper rounded-[12px] px-3.5 py-3">
+  <div class="text-[11px] font-medium text-text-soft tracking-[0.04em] uppercase">{label}</div>
+  <div class="mt-1 font-extrabold text-[26px] text-navy tracking-[-0.02em] flex items-baseline gap-2">
+    {value}
+    <span class={`text-[11px] font-semibold inline-flex items-center gap-0.5 ${color}`}>
+      <Icon name={icon} width={11} height={11} /> {delta}
+    </span>
+  </div>
+</div>

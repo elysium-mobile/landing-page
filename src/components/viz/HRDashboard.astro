@@ -1,0 +1,35 @@
+---
+/**
+ * HRDashboard — the white card showing the HR view (KPIs + bars).
+ *
+ * Stacks: title row, 2×2 KPI grid, chart card. Numbers are fixed mock values
+ * (the page is presentational) — translations only cover the labels.
+ */
+import HRStat from './HRStat.astro';
+import HRChartBars from './HRChartBars.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations(Astro.currentLocale);
+---
+
+<div class="relative z-10 bg-surface rounded-(--radius-card) p-5.5 border border-navy/6" style="box-shadow:var(--shadow-card-lg);">
+  <div class="flex items-center justify-between mb-4">
+    <h4 class="m-0 font-bold text-[15px] text-navy">{t('viz.hr.title')}</h4>
+    <span class="text-[11px] font-medium text-text-soft bg-paper px-2.5 py-1 rounded-full">
+      {t('viz.hr.range')}
+    </span>
+  </div>
+  <div class="grid grid-cols-2 gap-2.5 mb-4">
+    <HRStat label={t('viz.hr.stat.enps')} value="+42" delta="6" trend="up" />
+    <HRStat label={t('viz.hr.stat.turnover')} value="2.1%" delta="0.8" trend="down" />
+    <HRStat label={t('viz.hr.stat.reports')} value="17" delta="4" trend="up" />
+    <HRStat label={t('viz.hr.stat.mood')} value="7.6" delta="0.3" trend="up" />
+  </div>
+  <div class="bg-paper rounded-[12px] px-4 py-3.5 h-32.5 relative">
+    <div class="text-[12px] font-semibold text-navy mb-1.5 flex justify-between">
+      <span>{t('viz.hr.chart.title')}</span>
+      <span class="text-[10px] text-text-soft font-medium">{t('viz.hr.chart.sub')}</span>
+    </div>
+    <HRChartBars />
+  </div>
+</div>

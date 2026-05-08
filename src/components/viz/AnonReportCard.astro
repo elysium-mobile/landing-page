@@ -1,0 +1,43 @@
+---
+/**
+ * AnonReportCard — the "Anonymous · Design" report card shown in EmployeeViz.
+ *
+ * Three blocks: header (anonymous author + chip), report body (title +
+ * paragraph + risk + reactions), footer divider. Pure presentation; the
+ * ForumSide card floats on top of this via absolute positioning at the
+ * EmployeeViz layer.
+ */
+import { Icon } from 'astro-icon/components';
+import Chip from '../ui/Chip.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations(Astro.currentLocale);
+---
+
+<div class="relative z-10 bg-surface rounded-(--radius-card) p-5.5 border border-navy/6" style="box-shadow:var(--shadow-card-lg);">
+  <div class="flex items-center justify-between mb-4.5">
+    <div class="flex items-center gap-2.5">
+      <div class="w-9 h-9 rounded-full grid place-items-center bg-mint text-teal-deep">
+        <Icon name="lock" width={16} height={16} />
+      </div>
+      <div>
+        <div class="font-semibold text-[14px] text-navy">{t('viz.emp.author')}</div>
+        <div class="text-[11px] text-text-soft">{t('viz.emp.meta')}</div>
+      </div>
+    </div>
+    <Chip variant="mint">{t('viz.emp.chip')}</Chip>
+  </div>
+  <div class="font-bold text-[16px] text-navy mb-2 leading-tight">
+    {t('viz.emp.report.title')}
+  </div>
+  <div class="text-[13.5px] leading-[1.55] text-ink mb-3.5">
+    {t('viz.emp.report.body')}
+  </div>
+  <div class="flex items-center gap-2.5 pt-3.5 border-t border-line text-[12px] text-text-soft">
+    <Chip variant="warning-soft">{t('viz.emp.risk')}</Chip>
+    <div class="flex gap-3 ml-auto">
+      <span class="inline-flex items-center gap-1"><Icon name="heart" width={12} height={12} /> 14</span>
+      <span class="inline-flex items-center gap-1"><Icon name="message-circle" width={12} height={12} /> 6</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,35 @@
+---
+/**
+ * PhoneFrame — 296×600 device chassis with notch and screen.
+ *
+ * The chassis is a fixed-size dark rounded rectangle; the screen is the inner
+ * round-cornered surface that flexes to fill it. Contents (status bar +
+ * whatever you put in the slot) stack vertically inside the screen.
+ *
+ * Why fixed dimensions instead of responsive? The hero composition relies on
+ * the phone being a known size so floating cards can be absolutely positioned
+ * around it. Don't reshape this without revisiting HeroVisual.
+ */
+import PhoneStatusBar from './PhoneStatusBar.astro';
+
+interface Props {
+  /** Extra utility classes (e.g. absolute positioning when used inside Hero). */
+  class?: string;
+}
+const { class: extra = '' } = Astro.props;
+---
+
+<div
+  class={`relative p-2.5 ${extra}`.trim()}
+  style="width:296px;height:600px;border-radius:40px;background:#0E1A2A;box-shadow:var(--shadow-phone);"
+>
+  <!-- Notch: a darker chip pinned to the top centre of the chassis. -->
+  <div
+    class="absolute top-4.5 left-1/2 -translate-x-1/2 w-23 h-6 rounded-[14px] z-10"
+    style="background:#0E1A2A"
+  ></div>
+  <div class="relative w-full h-full rounded-4xl overflow-hidden flex flex-col bg-paper">
+    <PhoneStatusBar />
+    <slot />
+  </div>
+</div>

@@ -1,0 +1,43 @@
+---
+/**
+ * SiteHeader — sticky top bar.
+ *
+ * Layout: [Logo] · [Nav] · [LangSwitcher + Sign in (md+) + Demo CTA].
+ * The bar is `sticky top-0` with a translucent backdrop blur so content scrolls
+ * under it while staying readable. The active nav item gets a teal underline
+ * via `<NavLink active>`.
+ */
+import Logo from '../brand/Logo.astro';
+import NavLink from './NavLink.astro';
+import Button from '../ui/Button.astro';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import { useTranslations, localizedPath } from '../../i18n/utils';
+
+interface Props {
+  /** Which nav item is current; controls the underline. */
+  active?: 'home' | 'benefits' | 'how-it-works';
+}
+
+const { active = 'home' } = Astro.props;
+const t = useTranslations(Astro.currentLocale);
+const lp = (path: string) => localizedPath(Astro.currentLocale, path);
+---
+
+<header class="sticky top-0 z-50 bg-bg/80 border-b border-line-strong/60 backdrop-blur-md backdrop-saturate-[1.6]">
+  <div class="shell flex items-center justify-between h-18">
+    <Logo href={lp('/')} />
+
+    <!-- Hidden under 768px (Tailwind md). On mobile users get the brand and CTAs only. -->
+    <nav class="hidden md:flex items-center gap-7" aria-label="Primary">
+      <NavLink href={lp('/')} active={active === 'home'}>{t('header.nav.home')}</NavLink>
+      <NavLink href={lp('/#benefits')} active={active === 'benefits'}>{t('header.nav.benefits')}</NavLink>
+      <NavLink href={lp('/how-it-works')} active={active === 'how-it-works'}>{t('header.nav.how')}</NavLink>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <LanguageSwitcher />
+      <Button href="#" variant="ghost" class="hidden sm:inline-flex">{t('header.cta.signin')}</Button>
+      <Button href={lp('/request-demo')} variant="primary">{t('header.cta.demo')}</Button>
+    </div>
+  </div>
+</header>

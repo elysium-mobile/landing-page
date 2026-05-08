@@ -1,0 +1,33 @@
+---
+/**
+ * ReportForumCard — small white card pinned below the ReportPhone showing two
+ * forum threads. Reuses `ForumThread` from the landing's EmployeeViz so the
+ * thread row stays consistent across pages.
+ */
+import { Icon } from 'astro-icon/components';
+import ForumThread from '../viz/ForumThread.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations(Astro.currentLocale);
+---
+
+<div class="mt-5 w-[296px] mx-auto bg-white rounded-2xl border border-line p-4" style="box-shadow:var(--shadow-card-lg);">
+  <h4 class="m-0 mb-2.5 text-[11px] font-semibold tracking-widest uppercase text-text-soft inline-flex items-center gap-1.5">
+    <Icon name="users" width={12} height={12} /> {t('cf.report.forum.title')}
+  </h4>
+  <ForumThread
+    initial="A"
+    title={t('cf.report.forum.t1.title')}
+    meta={t('cf.report.forum.t1.meta')}
+    avatarBg="var(--color-mint)"
+    avatarColor="var(--color-teal-deep)"
+  />
+  <ForumThread
+    initial="A"
+    title={t('cf.report.forum.t2.title')}
+    meta={t('cf.report.forum.t2.meta')}
+    avatarBg="rgba(77,168,218,0.18)"
+    avatarColor="var(--color-sky)"
+    divide
+  />
+</div>

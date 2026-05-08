@@ -1,0 +1,16 @@
+---
+/**
+ * EmployeeViz — composes the AnonReportCard + ForumSide combo.
+ *
+ * Pure composition; all the layout & glow is in VizShell, all the content is
+ * in the two children.
+ */
+import VizShell from './VizShell.astro';
+import AnonReportCard from './AnonReportCard.astro';
+import ForumSide from './ForumSide.astro';
+---
+
+<VizShell theme="employee">
+  <AnonReportCard />
+  <ForumSide />
+</VizShell>

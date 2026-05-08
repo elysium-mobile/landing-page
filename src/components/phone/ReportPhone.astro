@@ -1,0 +1,114 @@
+---
+/**
+ * ReportPhone — phone screen showing the anonymous-report flow.
+ *
+ * Listens to `softwork:scenario-step` events on `document` (scoped to
+ * `scenario === 'report'`) and updates two pieces of UI based on the step:
+ *   - 0: textarea shows the placeholder; submit button reads "Enviar reporte".
+ *   - 1: textarea shows the filled detail; submit still "Enviar reporte".
+ *   - 2: textarea filled; submit reads "Enviando…".
+ *   - 3: same as 2 plus the ReportConfirm overlay slides in.
+ *
+ * State lives in DOM `data-*` attributes so we don't need a framework. The
+ * markup pre-renders all variants and the listener just toggles the right
+ * attributes.
+ */
+import { Icon } from 'astro-icon/components';
+import PhoneFrame from './PhoneFrame.astro';
+import Chip from '../ui/Chip.astro';
+import ReportPills from './ReportPills.astro';
+import ReportPrivacyBox from './ReportPrivacyBox.astro';
+import ReportConfirm from './ReportConfirm.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations(Astro.currentLocale);
+---
+
+<div class="relative" data-report-phone>
+  <PhoneFrame>
+    <div class="flex flex-col flex-1 px-4 pb-3 pt-2">
+      <!-- Top bar: back chevron, title, anonymous chip. -->
+      <div class="flex items-center justify-between mb-4">
+        <span class="grid place-items-center w-7 h-7 rounded-full bg-paper text-text-soft">
+          <Icon name="chevron-right" class="rotate-180" width={14} height={14} />
+        </span>
+        <h3 class="m-0 text-[14px] font-bold text-navy" data-report-title>
+          {t('cf.report.topbar.new')}
+        </h3>
+        <Chip variant="mint" compact>
+          <Icon name="lock" width={11} height={11} /> {t('cf.report.chip')}
+        </Chip>
+      </div>
+
+      <!-- Body: category pills + textarea + privacy box. -->
+      <div class="flex flex-col gap-3.5 flex-1 overflow-hidden">
+        <div>
+          <div class="text-[10px] uppercase tracking-[0.08em] font-semibold text-text-soft mb-2">
+            {t('cf.report.label.cat')}
+          </div>
+          <ReportPills />
+        </div>
+
+        <div>
+          <div class="text-[10px] uppercase tracking-[0.08em] font-semibold text-text-soft mb-2">
+            {t('cf.report.label.what')}
+          </div>
+          <div
+            class="bg-paper rounded-xl p-3 text-[12px] leading-snug min-h-[78px] border border-line"
+            data-report-textarea
+          >
+            <span data-report-placeholder class="text-text-mute">{t('cf.report.placeholder')}</span>
+            <span data-report-detail class="hidden text-ink">{t('cf.report.detail')}</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="text-[10px] uppercase tracking-[0.08em] font-semibold text-text-soft mb-2">
+            {t('cf.report.label.privacy')}
+          </div>
+          <ReportPrivacyBox />
+        </div>
+      </div>
+
+      <!-- Submit button — text swaps to "Enviando…" on stages 2/3. -->
+      <button
+        class="mt-3 w-full h-11 rounded-xl bg-navy text-white text-[13px] font-semibold transition-colors duration-200"
+        data-report-submit
+      >
+        {t('cf.report.submit')}
+      </button>
+    </div>
+
+    <!-- Confirmation overlay (visible only on stage 3). -->
+    <ReportConfirm />
+  </PhoneFrame>
+</div>
+
+<script is:inline define:vars={{ submitLabel: t('cf.report.submit'), sendingLabel: t('cf.report.submitting'), titleNew: t('cf.report.topbar.new'), titleSent: t('cf.report.topbar.sent') }}>
+  // Listen for ScenarioStepList broadcasts and re-paint stage-dependent UI.
+  document.querySelectorAll('[data-report-phone]').forEach((root) => {
+    const placeholder = root.querySelector('[data-report-placeholder]');
+    const detail = root.querySelector('[data-report-detail]');
+    const submit = root.querySelector('[data-report-submit]');
+    const title = root.querySelector('[data-report-title]');
+    const confirm = root.querySelector('[data-report-confirm]');
+
+    const apply = (step) => {
+      const filled = step >= 1;
+      const sending = step >= 2;
+      const done = step === 3;
+
+      if (placeholder) placeholder.classList.toggle('hidden', filled);
+      if (detail) detail.classList.toggle('hidden', !filled);
+      if (submit) submit.textContent = sending ? sendingLabel : submitLabel;
+      if (title) title.textContent = done ? titleSent : titleNew;
+      if (confirm) confirm.setAttribute('data-active', done ? 'true' : 'false');
+    };
+
+    document.addEventListener('softwork:scenario-step', (e) => {
+      const detail = (e instanceof CustomEvent ? e.detail : null) || {};
+      if (detail.scenario !== 'report') return;
+      apply(detail.step);
+    });
+  });
+</script>

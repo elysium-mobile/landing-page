@@ -1,0 +1,28 @@
+---
+/**
+ * ValueLink — "View employee flow →" style affordance.
+ *
+ * The arrow gap widens on hover (`gap-2 → gap-3.5`) for a subtle "go" cue
+ * without resorting to a color change. The `transition-[gap]` ensures the
+ * animation runs even though `gap` is the only animated property.
+ */
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  /** Destination, pre-localized by the caller. */
+  href: string;
+  /** Extra utility classes. */
+  class?: string;
+}
+
+const { href, class: extra = '' } = Astro.props;
+---
+
+<a
+  href={href}
+  class={`group inline-flex items-center gap-2 font-semibold text-[14px] text-navy transition-[gap] 
+  duration-200 hover:gap-3.5 ${extra}`.trim()}
+>
+  <slot />
+  <Icon name="arrow-right" width={16} height={16} />
+</a>

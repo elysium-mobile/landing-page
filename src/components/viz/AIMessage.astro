@@ -1,0 +1,27 @@
+---
+/**
+ * AIMessage — single chat bubble (user or bot).
+ *
+ * Note: the cycler in AIChat builds bubbles imperatively in JS rather than
+ * mounting this component. This file exists for static rendering and so the
+ * component vocabulary is complete. The visual contract is identical.
+ */
+type Variant = 'user' | 'bot';
+
+interface Props {
+  variant: Variant;
+}
+
+const { variant } = Astro.props;
+
+// User bubbles right-align in sky; bot bubbles left-align in paper.
+// The asymmetric corner radius (`rounded-br/bl-[4px]`) creates the speech-tail.
+const styles: Record<Variant, string> = {
+  user: 'self-end bg-sky text-white rounded-br-[4px]',
+  bot: 'self-start bg-paper text-ink rounded-bl-[4px]',
+};
+---
+
+<div class={`max-w-[80%] px-3.5 py-2.5 rounded-3.5 text-[13px] leading-snug ${styles[variant]}`}>
+  <slot />
+</div>

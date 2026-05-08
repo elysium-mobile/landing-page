@@ -1,0 +1,20 @@
+---
+/**
+ * `/en/request-demo` — English placeholder page.
+ *
+ * Mirror of the Spanish `request-demo.astro`. Astro's i18n config sets
+ * `Astro.currentLocale === 'en'` for this file, so DemoSplash and friends
+ * automatically pull copy from the `en` dictionary.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteHeader from '../../components/site/SiteHeader.astro';
+import SiteFooter from '../../components/site/SiteFooter.astro';
+import DemoSplash from '../../components/sections/DemoSplash.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations(Astro.currentLocale);
+---
+
+<BaseLayout title={t('demo.meta.title')} description={t('demo.meta.description')}>
+  <DemoSplash />
+</BaseLayout>

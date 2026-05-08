@@ -1,0 +1,37 @@
+---
+/**
+ * ForumSide — small floating card pinned to the bottom-right of EmployeeViz.
+ *
+ * Shows two example forum threads. Floats with the same `floaty` keyframe
+ * everything else uses, but at 7s instead of 6s so it doesn't lock-step with
+ * the AnonReportCard's surroundings.
+ */
+import ForumThread from './ForumThread.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations(Astro.currentLocale);
+---
+
+<div
+  class="absolute -right-10 -bottom-10 z-20 w-55 bg-white rounded-[14px] p-3.5 border border-navy/6 max-md:right-2"
+  style="box-shadow:var(--shadow-card-lg);animation:floaty 7s ease-in-out infinite;"
+>
+  <h5 class="m-0 mb-2.5 text-[11px] font-semibold tracking-widest uppercase text-text-soft">
+    {t('viz.emp.forum.title')}
+  </h5>
+  <ForumThread
+    initial="A"
+    title={t('viz.emp.thread1.title')}
+    meta={t('viz.emp.thread1.meta')}
+    avatarBg="var(--color-mint)"
+    avatarColor="var(--color-teal-deep)"
+  />
+  <ForumThread
+    initial="A"
+    title={t('viz.emp.thread2.title')}
+    meta={t('viz.emp.thread2.meta')}
+    avatarBg="rgba(77,168,218,0.18)"
+    avatarColor="var(--color-sky)"
+    divide
+  />
+</div>

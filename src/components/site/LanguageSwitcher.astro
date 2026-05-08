@@ -1,0 +1,64 @@
+---
+/**
+ * LanguageSwitcher — two-pill toggle that swaps between '/' (es) and '/en/' (en).
+ *
+ * Stays simple on purpose: each link points to the locale's root, so clicking
+ * the switcher always lands the user on the home page in the new language. If
+ * we add deep-linkable translated routes (e.g. /en/how-it-works), this needs to
+ * derive the destination by stripping the current locale prefix from
+ * `Astro.url.pathname` and re-prefixing.
+ *
+ * Persistence: clicking a pill writes `softwork.lang` to localStorage, which
+ * the auto-detect script in BaseLayout reads on subsequent visits. That makes
+ * the manual choice "sticky" — the auto-redirect will never override it.
+ */
+import { languages, type Lang } from '../../i18n/ui';
+import { resolveLang } from '../../i18n/utils';
+
+const current = resolveLang(Astro.currentLocale);
+
+const codes = Object.keys(languages) as Lang[];
+---
+
+<div
+  class="hidden sm:inline-flex items-center rounded-full border border-line-strong bg-white/70 backdrop-blur-md p-0.5 text-[12px] font-semibold text-text-soft"
+  role="group"
+  aria-label="Language"
+  data-lang-switcher
+>
+  {codes.map((code) => {
+    // 'es' is the un-prefixed default route; everything else gets '/<code>/'.
+    const href = code === 'es' ? '/' : `/${code}/`;
+    const isActive = code === current;
+    return (
+      <a
+        href={href}
+        hreflang={code}
+        data-lang={code}
+        aria-current={isActive ? 'true' : undefined}
+        class:list={[
+          'px-2.5 py-1 rounded-full transition-colors duration-150',
+          isActive ? 'bg-navy text-white' : 'hover:text-navy',
+        ]}
+      >
+        {code.toUpperCase()}
+      </a>
+    );
+  })}
+</div>
+
+<script>
+  // Write the chosen locale to localStorage *before* navigation kicks in so the
+  // landing locale on the next page-load matches the user's intent.
+  document.querySelectorAll<HTMLElement>('[data-lang-switcher]').forEach((root) => {
+    root.querySelectorAll<HTMLAnchorElement>('a[data-lang]').forEach((a) => {
+      a.addEventListener('click', () => {
+        try {
+          localStorage.setItem('softwork.lang', a.dataset.lang ?? '');
+        } catch (_) {
+          /* private mode etc. — proceed with navigation regardless. */
+        }
+      });
+    });
+  });
+</script>

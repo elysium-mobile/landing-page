@@ -1,0 +1,78 @@
+---
+/**
+ * Hero — the page's opening section.
+ *
+ * Layout: 2-column grid on lg+ (copy left, visual right). On smaller widths
+ * the visual stacks below the copy. The two `.hero-glow-*` divs are big soft
+ * radial halos behind the content; they're scoped <style> rules instead of
+ * Tailwind utilities because radial-gradient strings get unreadable inline.
+ *
+ * Entrance animation: each block uses `.fade-up` with a `delay-N` that
+ * staggers them 80ms apart for a single coherent reveal on first paint.
+ */
+import HeroEyebrow from '../ui/HeroEyebrow.astro';
+import HeroVisual from './HeroVisual.astro';
+import HeroTrust from './HeroTrust.astro';
+import Button from '../ui/Button.astro';
+import { Icon } from 'astro-icon/components';
+import { useTranslations, localizedPath } from '../../i18n/utils';
+
+const t = useTranslations(Astro.currentLocale);
+const lp = (p: string) => localizedPath(Astro.currentLocale, p);
+---
+
+<section class="hero relative pt-16 pb-12 overflow-hidden">
+  <!-- Two giant soft halos: top-right sky, bottom-left mint. Pure decoration. -->
+  <div class="hero-glow-a"></div>
+  <div class="hero-glow-b"></div>
+
+  <div class="shell relative z-10 grid items-center gap-10 lg:grid-cols-[1.05fr_1fr] grid-cols-1">
+    <div>
+      <div class="fade-up">
+        <HeroEyebrow>{t('hero.eyebrow')}</HeroEyebrow>
+      </div>
+      <!-- Title HTML contains <em class="gradient-em"> markers for the gradient text. -->
+      <h1
+        class="t-display fade-up delay-1 m-0 mb-6"
+        set:html={t('hero.title.html')}
+      ></h1>
+      <p class="text-[18px] leading-[1.55] text-text-soft max-w-130 m-0 mb-8 fade-up delay-2">
+        {t('hero.subtitle')}
+      </p>
+      <div class="flex flex-wrap gap-3 items-center fade-up delay-3">
+        <Button href={lp('/request-demo')} variant="primary" size="lg">
+          {t('hero.cta.demo')}
+          <Icon name="arrow-right" width={16} height={16} />
+        </Button>
+        <Button href={lp('/how-it-works')} variant="ghost" size="lg">{t('hero.cta.how')}</Button>
+      </div>
+      <HeroTrust />
+    </div>
+
+    <HeroVisual />
+  </div>
+</section>
+
+<style>
+  /* Radial halos are scoped to Hero — they share its overflow:hidden context. */
+  .hero-glow-a {
+    position: absolute;
+    top: -160px;
+    right: -200px;
+    width: 720px;
+    height: 720px;
+    background: radial-gradient(circle at center, rgba(77, 168, 218, 0.18) 0%, rgba(77, 168, 218, 0) 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .hero-glow-b {
+    position: absolute;
+    bottom: -260px;
+    left: -180px;
+    width: 620px;
+    height: 620px;
+    background: radial-gradient(circle at center, rgba(165, 227, 216, 0.34) 0%, rgba(165, 227, 216, 0) 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+</style>

@@ -1,0 +1,24 @@
+---
+/**
+ * Logo — BrandMark + "SoftWork" wordmark, links to home.
+ *
+ * `invert` flips the wordmark colour for dark backgrounds (used in the footer);
+ * the BrandMark itself stays the same gradient in both contexts.
+ */
+import BrandMark from './BrandMark.astro';
+
+interface Props {
+  /** Pre-localized home URL. */
+  href?: string;
+  /** Use white wordmark for dark backgrounds. */
+  invert?: boolean;
+}
+
+const { href = '/', invert = false } = Astro.props;
+const wordmark = invert ? 'text-white' : 'text-navy';
+---
+
+<a href={href} class={`flex items-center gap-2.5 font-bold text-[18px] tracking-[-0.01em] ${wordmark}`}>
+  <BrandMark />
+  <span>SoftWork</span>
+</a>

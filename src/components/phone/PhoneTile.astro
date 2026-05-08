@@ -1,0 +1,37 @@
+---
+/**
+ * PhoneTile — one row inside the phone home preview ("Report Incident",
+ * "Internal Forums", "AI Assistant"). Shape: [icon disc] · [title + sub] · [chevron].
+ *
+ * `iconBg`/`iconColor` are passed in as raw CSS so each tile can use a
+ * different brand tint without us building a variants table for them. They
+ * accept `var(--color-*)` or rgba values.
+ */
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  /** Local-icon name from `src/icons/`. */
+  icon: string;
+  title: string;
+  sub: string;
+  /** CSS background for the icon disc (rgba or `var(--color-*)`). */
+  iconBg: string;
+  /** CSS color for the icon glyph. */
+  iconColor: string;
+}
+
+const { icon, title, sub, iconBg, iconColor } = Astro.props;
+---
+
+<div class="flex items-center gap-3 mb-2.5 px-3.5 py-3 rounded-[14px] bg-white shadow-(--shadow-card)">
+  <div class="w-9 h-9 rounded-[10px] grid place-items-center shrink-0" style={`background:${iconBg};color:${iconColor};`}>
+    <Icon name={icon} width={18} height={18} />
+  </div>
+  <div>
+    <div class="text-[13px] font-semibold text-navy leading-tight">{title}</div>
+    <div class="text-[11px] text-text-soft mt-0.5">{sub}</div>
+  </div>
+  <div class="ml-auto text-text-mute">
+    <Icon name="chevron-right" width={16} height={16} />
+  </div>
+</div>

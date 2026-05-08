@@ -1,0 +1,50 @@
+---
+/**
+ * CTABanner — full-bleed gradient card with the page's primary conversion goal.
+ *
+ * A radial-gradient highlight in the top-right corner adds depth without an
+ * image. CTAs use the `on-dark` and `on-dark-ghost` Button variants because
+ * the navy/teal background needs different colour treatment than the
+ * default-light context.
+ *
+ * The `id="demo"` is kept as a fallback anchor in case any external link
+ * still references `#demo`. The primary "Request Demo" CTAs now route to
+ * /request-demo (a placeholder page; mobile apps still in development).
+ */
+import Button from '../ui/Button.astro';
+import { Icon } from 'astro-icon/components';
+import { useTranslations, localizedPath } from '../../i18n/utils';
+
+const t = useTranslations(Astro.currentLocale);
+const lp = (p: string) => localizedPath(Astro.currentLocale, p);
+---
+
+<div class="shell" id="demo">
+  <div
+    class="relative mt-16 mx-auto rounded-3xl p-14 text-white overflow-hidden"
+    style="background:linear-gradient(135deg, var(--color-navy) 0%, #2A6BAA 50%, var(--color-teal) 130%);"
+  >
+    <!-- Top-right mint highlight; pointer-events:none ensures clicks pass through. -->
+    <div
+      class="pointer-events-none absolute -top-25 -right-25 w-90 h-90"
+      style="background:radial-gradient(circle, rgba(165,227,216,0.30), transparent 60%);"
+    ></div>
+    <div class="relative z-10 grid gap-8 items-center grid-cols-1 lg:grid-cols-[1.4fr_1fr]">
+      <div>
+        <h3 class="m-0 mb-3 font-extrabold text-[32px] tracking-[-0.02em] leading-[1.1]">
+          {t('cta.title')}
+        </h3>
+        <p class="m-0 text-white/78 text-[16px] leading-normal max-w-130">
+          {t('cta.body')}
+        </p>
+      </div>
+      <div class="flex gap-3 flex-wrap lg:justify-end">
+        <Button href={lp('/request-demo')} variant="on-dark" size="lg">
+          {t('cta.demo')}
+          <Icon name="arrow-right" width={16} height={16} />
+        </Button>
+        <Button href="#" variant="on-dark-ghost" size="lg">{t('cta.sales')}</Button>
+      </div>
+    </div>
+  </div>
+</div>

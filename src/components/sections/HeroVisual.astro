@@ -1,0 +1,27 @@
+---
+/**
+ * HeroVisual — fixed-height column that holds the phone mock and 3 floating cards.
+ *
+ * The phone is absolutely positioned (centered horizontally, top-aligned), and
+ * the FloatCards anchor to specific corners around it. The wrapper height is
+ * fixed (580/640px) so the absolute positions are predictable and don't depend
+ * on intrinsic content size.
+ */
+import HeroPhone from '../phone/HeroPhone.astro';
+import FloatCard from './FloatCard.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations(Astro.currentLocale);
+---
+
+<!--
+  Height must contain the 600px PhoneFrame *plus* the floating cards that
+  overflow above and below it. h-160 (640px) gives a 40px buffer so the
+  phone never bleeds into the StatsStrip below.
+-->
+<div class="hero-visual relative h-160 fade-up delay-2 max-md:h-170">
+  <HeroPhone />
+  <FloatCard variant="anon" icon="lock" label={t('float.anon.label')} value={t('float.anon.value')} />
+  <FloatCard variant="alert" icon="alert-triangle" label={t('float.alert.label')} value={t('float.alert.value')} />
+  <FloatCard variant="ai" icon="sparkles" label={t('float.ai.label')} value={t('float.ai.value')} />
+</div>

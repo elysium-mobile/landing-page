@@ -1,0 +1,58 @@
+---
+/**
+ * FloatCard — one of three labelled cards floating around the hero phone.
+ *
+ * Position, icon-disc tint, and floaty animation-delay are determined by
+ * `variant` so the three cards offset their bobbing motion (0s / -2s / -4s)
+ * for a more organic feel. All three use the same `floaty` keyframe.
+ */
+import { Icon } from 'astro-icon/components';
+
+type Variant = 'anon' | 'alert' | 'ai';
+
+interface Props {
+  variant: Variant;
+  /** Local-icon name (`src/icons/`). */
+  icon: string;
+  /** Small uppercase label above the bold value. */
+  label: string;
+  /** Bold value below the label. */
+  value: string;
+}
+
+const { variant, icon, label, value } = Astro.props;
+
+// Each card pins to a different corner of the hero phone.
+const positions: Record<Variant, string> = {
+  anon: 'top-15 -left-3',
+  alert: 'top-70 -right-5.5',
+  ai: 'bottom-7.5 -left-5.5',
+};
+
+// Tone for the icon disc. Picked to read against the background halo behind it.
+const tones: Record<Variant, { bg: string; color: string }> = {
+  anon: { bg: 'var(--color-mint)', color: 'var(--color-teal-deep)' },
+  alert: { bg: 'rgba(232,168,56,0.18)', color: 'var(--color-warning-deep)' },
+  ai: { bg: 'rgba(77,168,218,0.16)', color: 'var(--color-sky)' },
+};
+
+// Stagger the floaty animation so the trio doesn't bob in lockstep.
+const delays: Record<Variant, string> = {
+  anon: '0s',
+  alert: '-2s',
+  ai: '-4s',
+};
+---
+
+<div
+  class={`absolute ${positions[variant]} flex items-center gap-3 px-4 py-3.5 rounded-3.5 bg-surface border border-navy/6`}
+  style={`box-shadow:var(--shadow-card-lg);animation:floaty 6s ease-in-out infinite;animation-delay:${delays[variant]};`}
+>
+  <div class="w-10 h-10 rounded-2.5 grid place-items-center shrink-0" style={`background:${tones[variant].bg};color:${tones[variant].color};`}>
+    <Icon name={icon} width={18} height={18} />
+  </div>
+  <div>
+    <div class="text-[10px] tracking-[0.08em] uppercase font-semibold text-text-mute">{label}</div>
+    <div class="text-[14px] font-semibold text-navy mt-0.5">{value}</div>
+  </div>
+</div>

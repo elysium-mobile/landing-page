@@ -1,0 +1,152 @@
+---
+/**
+ * `/how-it-works` — Spanish version (default locale).
+ *
+ * Composes the three scenarios using the generic `Scenario` shell:
+ *   1. Report flow (employee) — auto-cycling stepper drives the ReportPhone state.
+ *   2. AI assistant (Ely)    — the phone advances itself; the stepper just listens.
+ *   3. HR dashboard           — static, first step active.
+ *
+ * Each scenario lives in its own anchor (#report / #ai / #dashboard) so the
+ * CFStepTabs in the hero can jump straight to the matching block.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/site/SiteHeader.astro';
+import SiteFooter from '../components/site/SiteFooter.astro';
+import CFHero from '../components/sections/CFHero.astro';
+import Scenario from '../components/sections/Scenario.astro';
+import ScenarioStepList from '../components/sections/ScenarioStepList.astro';
+import CFCta from '../components/sections/CFCta.astro';
+import ReportPhone from '../components/phone/ReportPhone.astro';
+import ReportForumCard from '../components/phone/ReportForumCard.astro';
+import CFAIPhone from '../components/phone/CFAIPhone.astro';
+import AISidePanel from '../components/viz/AISidePanel.astro';
+import HRPhone from '../components/phone/HRPhone.astro';
+import { useTranslations } from '../i18n/utils';
+
+const t = useTranslations(Astro.currentLocale);
+
+// Step lists kept inline so each scenario can pick its own copy + theme.
+const reportSteps = [
+  { title: t('cf.s1.step1.title'), desc: t('cf.s1.step1.desc') },
+  { title: t('cf.s1.step2.title'), desc: t('cf.s1.step2.desc') },
+  { title: t('cf.s1.step3.title'), desc: t('cf.s1.step3.desc') },
+  { title: t('cf.s1.step4.title'), desc: t('cf.s1.step4.desc') },
+];
+
+const aiSteps = [
+  { title: t('cf.s2.step1.title'), desc: t('cf.s2.step1.desc') },
+  { title: t('cf.s2.step2.title'), desc: t('cf.s2.step2.desc') },
+  { title: t('cf.s2.step3.title'), desc: t('cf.s2.step3.desc') },
+  { title: t('cf.s2.step4.title'), desc: t('cf.s2.step4.desc') },
+];
+
+const hrSteps = [
+  { title: t('cf.s3.step1.title'), desc: t('cf.s3.step1.desc') },
+  { title: t('cf.s3.step2.title'), desc: t('cf.s3.step2.desc') },
+  { title: t('cf.s3.step3.title'), desc: t('cf.s3.step3.desc') },
+];
+
+// Side-panel rows — hand-built strings rather than table-of-translations to
+// keep the panel definition in the page (where it's only used).
+const detectRows = [
+  { label: t('cf.ai.detect.row1.label'), value: t('cf.ai.detect.row1.value') },
+  { label: t('cf.ai.detect.row2.label'), value: t('cf.ai.detect.row2.value') },
+  { label: t('cf.ai.detect.row3.label'), value: t('cf.ai.detect.row3.value'), color: 'var(--color-teal)' },
+];
+const privacyRows = [
+  { label: t('cf.ai.privacy.row1.label'), check: true },
+  { label: t('cf.ai.privacy.row2.label'), value: t('cf.ai.privacy.row2.value') },
+  { label: t('cf.ai.privacy.row3.label'), value: t('cf.ai.privacy.row3.value') },
+];
+---
+
+<BaseLayout title={t('cf.meta.title')} description={t('cf.meta.description')}>
+  <SiteHeader active="how-it-works" />
+  <CFHero />
+
+  <!-- Scenario 1: anonymous report. Auto-cycles every 2.6s; phone reacts. -->
+  <Scenario
+    id="report"
+    num={1}
+    eyebrow={t('cf.s1.eyebrow')}
+    title={t('cf.s1.title')}
+    body={t('cf.s1.body')}
+    theme="teal"
+  >
+    <ScenarioStepList
+      slot="steps"
+      scenario="report"
+      steps={reportSteps}
+      cycle
+      cycleMs={2600}
+      theme="teal"
+    />
+    <div slot="stage">
+      <ReportPhone />
+      <ReportForumCard />
+    </div>
+  </Scenario>
+
+  <!-- Scenario 2: AI assistant. The phone advances; the stepper passively follows. -->
+  <Scenario
+    id="ai"
+    num={2}
+    eyebrow={t('cf.s2.eyebrow')}
+    title={t('cf.s2.title')}
+    body={t('cf.s2.body')}
+    theme="sky"
+    flip
+  >
+    <ScenarioStepList
+      slot="steps"
+      scenario="ai"
+      steps={aiSteps}
+      theme="sky"
+    />
+    <div slot="stage" class="relative">
+      <CFAIPhone />
+      <AISidePanel
+        icon="activity"
+        title={t('cf.ai.detect.title')}
+        rows={detectRows}
+        position="-top-4 -left-12"
+        width="w-44"
+        delay="-2s"
+      />
+      <AISidePanel
+        icon="lock"
+        title={t('cf.ai.privacy.title')}
+        rows={privacyRows}
+        position="bottom-20 -right-12"
+        width="w-44"
+        delay="-4s"
+      />
+    </div>
+  </Scenario>
+
+  <!-- Scenario 3: HR dashboard. Static. -->
+  <Scenario
+    id="dashboard"
+    num={3}
+    eyebrow={t('cf.s3.eyebrow')}
+    title={t('cf.s3.title')}
+    body={t('cf.s3.body')}
+    theme="navy"
+  >
+    <ScenarioStepList
+      slot="steps"
+      scenario="dashboard"
+      steps={hrSteps}
+      cycle
+      cycleMs={3500}
+      theme="navy"
+    />
+    <div slot="stage">
+      <HRPhone />
+    </div>
+  </Scenario>
+
+  <CFCta />
+  <SiteFooter />
+</BaseLayout>

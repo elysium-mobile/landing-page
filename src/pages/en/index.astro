@@ -1,0 +1,27 @@
+---
+/**
+ * `/en/` — English landing.
+ *
+ * Identical composition to the root `index.astro`; what differs is just the
+ * URL — Astro sets `Astro.currentLocale === 'en'` for files under `src/pages/en/`,
+ * and the components pull copy from the `en` dictionary via `useTranslations`.
+ *
+ * If a third locale is added later, mirror this file under `src/pages/<lang>/`.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteHeader from '../../components/site/SiteHeader.astro';
+import SiteFooter from '../../components/site/SiteFooter.astro';
+import Hero from '../../components/sections/Hero.astro';
+import StatsStrip from '../../components/sections/StatsStrip.astro';
+import Benefits from '../../components/sections/Benefits.astro';
+import CTABanner from '../../components/sections/CTABanner.astro';
+---
+
+<BaseLayout>
+  <SiteHeader active="home" />
+  <Hero />
+  <StatsStrip />
+  <Benefits />
+  <CTABanner />
+  <SiteFooter />
+</BaseLayout>

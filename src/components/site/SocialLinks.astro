@@ -1,0 +1,29 @@
+---
+/**
+ * SocialLinks — round social icon row used inside the footer brand block.
+ *
+ * Icons are local SVGs in `src/icons/` consumed via astro-icon. Hover swaps the
+ * background to teal for a brand-coherent emphasis.
+ */
+import { Icon } from 'astro-icon/components';
+
+const links = [
+  { icon: 'linkedin', label: 'LinkedIn' },
+  { icon: 'twitter', label: 'Twitter' },
+  { icon: 'instagram', label: 'Instagram' },
+  { icon: 'globe', label: 'Web' },
+];
+---
+
+<div class="flex gap-2.5 mt-5.5">
+  {links.map((s) => (
+    <a
+      href="#"
+      aria-label={s.label}
+      class="grid place-items-center w-9.5 h-9.5 rounded-full text-white/80 transition-colors duration-150 hover:bg-teal hover:text-white"
+      style="background:rgba(255,255,255,0.08)"
+    >
+      <Icon name={s.icon} width={16} height={16} />
+    </a>
+  ))}
+</div>
