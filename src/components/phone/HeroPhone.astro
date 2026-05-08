@@ -1,0 +1,56 @@
+---
+/**
+ * HeroPhone — the in-app preview rendered inside the hero PhoneFrame.
+ *
+ * Compose-only: greeting + avatar header, MoodSelector, then three PhoneTile
+ * rows. All copy comes from the i18n dictionary.
+ *
+ * Positioned absolutely (inside HeroVisual) so floating cards can stack around
+ * it without layout coupling.
+ */
+import PhoneFrame from './PhoneFrame.astro';
+import MoodSelector from './MoodSelector.astro';
+import PhoneTile from './PhoneTile.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations(Astro.currentLocale);
+---
+
+<PhoneFrame class="absolute left-1/2 top-0 -translate-x-1/2">
+  <div class="flex flex-col flex-1 px-4 pb-4" style="background:linear-gradient(180deg, var(--color-paper) 0%, #FFFFFF 30%);">
+    <div class="flex items-center justify-between px-1 pt-2 pb-4">
+      <div>
+        <div class="text-text-soft text-[12px]">{t('phone.greeting')}</div>
+        <div class="text-navy font-bold text-[16px]">{t('phone.name')}</div>
+      </div>
+      <!-- Avatar bubble: sky→teal gradient, two-letter initials. -->
+      <div class="w-9 h-9 rounded-full grid place-items-center text-white font-bold text-[13px]" style="background:linear-gradient(135deg, var(--color-sky), var(--color-teal));">
+        CR
+      </div>
+    </div>
+
+    <MoodSelector />
+
+    <PhoneTile
+      icon="shield"
+      title={t('phone.tile.report.title')}
+      sub={t('phone.tile.report.sub')}
+      iconBg="rgba(25,164,161,0.14)"
+      iconColor="var(--color-teal)"
+    />
+    <PhoneTile
+      icon="users"
+      title={t('phone.tile.forum.title')}
+      sub={t('phone.tile.forum.sub')}
+      iconBg="rgba(77,168,218,0.14)"
+      iconColor="var(--color-sky)"
+    />
+    <PhoneTile
+      icon="sparkles"
+      title={t('phone.tile.ai.title')}
+      sub={t('phone.tile.ai.sub')}
+      iconBg="rgba(165,227,216,0.45)"
+      iconColor="var(--color-teal-deep)"
+    />
+  </div>
+</PhoneFrame>

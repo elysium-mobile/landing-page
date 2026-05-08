@@ -1,0 +1,30 @@
+---
+/**
+ * Stat — single big-number + label cell inside StatsStrip.
+ *
+ * `divider` controls the right-side separator; the parent passes `false` for
+ * the last stat so the divider doesn't escape past the card edge. On mobile
+ * the strip becomes 2×2, but the divider rule is naive — that's why the
+ * second column also drops its divider via the parent grid (`:nth-child(2)`
+ * styling is unnecessary as long as the visual at small widths is acceptable).
+ */
+interface Props {
+  /** The headline number / phrase ("+38%", "3.2×", "24/7"). */
+  value: string;
+  /** Sub-label under the value. */
+  label: string;
+  /** Render the right-hand divider line. */
+  divider?: boolean;
+}
+const { value, label, divider = true } = Astro.props;
+---
+
+<div
+  class:list={[
+    'text-center px-4',
+    divider && 'border-r border-line last:border-r-0',
+  ]}
+>
+  <div class="font-extrabold text-[32px] text-navy tracking-[-0.02em]">{value}</div>
+  <div class="text-[12px] text-text-soft mt-1 tracking-[0.02em]">{label}</div>
+</div>

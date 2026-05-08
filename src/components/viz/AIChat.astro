@@ -1,0 +1,106 @@
+---
+/**
+ * AIChat — auto-cycling demo conversation between a user and "Aura".
+ *
+ * Header: avatar + status pill. Body: a `[data-ai-msgs]` container that the
+ * inline `<script>` repaints every 2200ms by walking through a localized
+ * sequence. Footer: AIInput.
+ *
+ * The cycling logic:
+ *   - `step` walks 0 → seq.length, then wraps back to 0 (showing nothing for
+ *     a beat before restarting — that's intentional, gives the eye a rest).
+ *   - When `document.hidden` (tab in background), we skip the tick instead of
+ *     advancing — saves CPU and avoids weird state on tab return.
+ *
+ * The chat copy lives in the i18n dictionary; we JSON-encode the sequence into
+ * `data-chat-seq` so the script reads localized text from the DOM rather than
+ * carrying a separate hard-coded array per locale.
+ */
+import { Icon } from 'astro-icon/components';
+import AIInput from './AIInput.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations(Astro.currentLocale);
+
+// Build the localized sequence inline. `kind: 'typing'` has no text.
+type Step = { kind: 'user' | 'bot' | 'typing'; text?: string };
+const seq: Step[] = [
+  { kind: 'user', text: t('chat.user1') },
+  { kind: 'typing' },
+  { kind: 'bot', text: t('chat.bot1') },
+  { kind: 'user', text: t('chat.user2') },
+  { kind: 'typing' },
+  { kind: 'bot', text: t('chat.bot2') },
+];
+---
+
+<div class="relative z-10 bg-surface rounded-(--radius-card) px-4.5 pt-4.5 pb-5.5 border border-navy/6" style="box-shadow:var(--shadow-card-lg);">
+  <div class="flex items-center gap-3 pb-3.5 border-b border-line mb-3.5">
+    <div class="relative w-10 h-10 rounded-[12px] grid place-items-center text-white" style="background:linear-gradient(135deg, var(--color-sky), var(--color-teal));">
+      <Icon name="sparkles" width={20} height={20} />
+      <!-- Live dot on the avatar — small status indicator. -->
+      <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-teal border-2 border-white"></span>
+    </div>
+    <div>
+      <div class="font-bold text-[14px] text-navy">{t('viz.ai.title')}</div>
+      <div class="text-[11px] text-text-soft flex items-center gap-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-teal"></span> {t('viz.ai.status')}
+      </div>
+    </div>
+  </div>
+
+  <!-- The cycling target. data-chat-seq carries the localized sequence as JSON. -->
+  <div
+    class="flex flex-col gap-2.5 min-h-45"
+    data-ai-msgs
+    data-chat-seq={JSON.stringify(seq)}
+  ></div>
+
+  <AIInput />
+</div>
+
+<script>
+  // Definitions — keep in sync with the .astro front matter.
+  type Step = { kind: 'user' | 'bot' | 'typing'; text?: string };
+
+  // Static markup for the typing-dots state. Inlined to avoid an extra mount.
+  const TYPING_HTML =
+    '<div class="self-start bg-paper px-3.5 py-2.5 rounded-[14px] rounded-bl-[4px] inline-flex gap-1">' +
+    '<span class="w-1.5 h-1.5 rounded-full bg-text-mute" style="animation:bounce-dot 1.2s infinite;"></span>' +
+    '<span class="w-1.5 h-1.5 rounded-full bg-text-mute" style="animation:bounce-dot 1.2s infinite 0.15s;"></span>' +
+    '<span class="w-1.5 h-1.5 rounded-full bg-text-mute" style="animation:bounce-dot 1.2s infinite 0.3s;"></span>' +
+    '</div>';
+
+  document.querySelectorAll<HTMLElement>('[data-ai-msgs]').forEach((root) => {
+    const seq: Step[] = JSON.parse(root.dataset.chatSeq ?? '[]');
+    let step = 0;
+
+    const render = () => {
+      root.innerHTML = '';
+      seq.slice(0, step).forEach((m) => {
+        if (m.kind === 'typing') {
+          root.insertAdjacentHTML('beforeend', TYPING_HTML);
+        } else {
+          // Bubble. self-end + sky for user, self-start + paper for bot.
+          const tone =
+            m.kind === 'user'
+              ? 'self-end bg-sky text-white rounded-br-[4px]'
+              : 'self-start bg-paper text-ink rounded-bl-[4px]';
+          const el = document.createElement('div');
+          el.className = `max-w-[80%] px-3.5 py-2.5 rounded-[14px] text-[13px] leading-[1.45] ${tone}`;
+          el.textContent = m.text ?? '';
+          root.appendChild(el);
+        }
+      });
+    };
+
+    render();
+    setInterval(() => {
+      // Tab hidden → skip the frame. State doesn't advance; resumes when visible.
+      if (document.hidden) return;
+      // Walk 0..N, then back to 0 (one extra step shows nothing — visual rest).
+      step = (step + 1) % (seq.length + 1);
+      render();
+    }, 2200);
+  });
+</script>

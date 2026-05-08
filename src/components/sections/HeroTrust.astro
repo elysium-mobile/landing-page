@@ -1,0 +1,23 @@
+---
+/**
+ * HeroTrust — small "An initiative by Elysium · [logo + name]" strip below the CTAs.
+ *
+ * No real logo source-images here; the design uses a tiny gradient swatch to
+ * stand in for a partner logo, since the prototype's brief was Elysium-only.
+ */
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations(Astro.currentLocale);
+---
+
+<div class="mt-9 flex items-center gap-4 flex-wrap fade-up delay-4">
+  <span class="text-[12px] text-text-mute tracking-[0.06em] uppercase">
+    {t('hero.trust.label')}
+  </span>
+  <div class="flex gap-5.5 items-center flex-wrap">
+    <span class="inline-flex items-center gap-2 font-bold text-text-mute text-[14px] tracking-[0.04em] opacity-70 hover:opacity-100 hover:text-navy transition-all duration-200">
+      <span class="inline-block w-4.5 h-4.5 rounded-md" style="background:linear-gradient(135deg, var(--color-navy), var(--color-teal));"></span>
+      {t('hero.trust.brand')}
+    </span>
+  </div>
+</div>

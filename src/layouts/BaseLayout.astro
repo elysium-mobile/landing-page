@@ -1,0 +1,90 @@
+---
+/**
+ * BaseLayout — the only layout in the project.
+ *
+ * Owns the <html> shell, <head>, font preconnect/loading, and the body slot.
+ * `lang` defaults to whatever Astro derived from the URL, so /es/* and /en/*
+ * automatically get the right `<html lang>` attribute.
+ *
+ * Title and description default to the localized strings from the dictionary;
+ * pages can override either by passing the prop.
+ */
+import '../styles/global.css';
+import { useTranslations, resolveLang } from '../i18n/utils';
+
+interface Props {
+  /** Override the localized default title for this page. */
+  title?: string;
+  /** Override the localized default meta description for this page. */
+  description?: string;
+}
+
+const lang = resolveLang(Astro.currentLocale);
+const t = useTranslations(lang);
+
+const { title = t('meta.title'), description = t('meta.description') } = Astro.props;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <!-- Root-absolute path so the favicon resolves the same on /, /en/, and /how-it-works/. -->
+    <link rel="icon" type="image/webp" href="/assets/icons/favicon.webp" />
+    
+
+    <!-- Preconnect saves a round-trip on the Google Fonts CSS request. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Exo: 300–800 weights cover everything from caption (300) to display (800). -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Exo:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+
+    <!--
+      Auto-redirect to the locale that matches the visitor's browser, before paint.
+        - Runs as `is:inline` in <head> so it fires before the body parses → no FOUC.
+        - Resolution priority:
+            1. localStorage('softwork.lang')  ← sticky manual choice from LanguageSwitcher
+            2. navigator.language prefix      ← first visit fallback
+            3. no-op (stay on the requested URL)
+        - Loop-safe: only redirects when the *target* locale differs from the
+          *current* path. `replace()` is used so the old URL doesn't enter history.
+    -->
+    <script is:inline>
+      (function () {
+        try {
+          var path = location.pathname;
+          var atEn = path === '/en' || path === '/en/' || path.indexOf('/en/') === 0;
+
+          var stored = localStorage.getItem('softwork.lang');
+          var pref = null;
+          if (stored === 'en' || stored === 'es') {
+            pref = stored;
+          } else {
+            var nav = (navigator.language || '').toLowerCase();
+            if (nav.indexOf('es') === 0) pref = 'es';
+            else if (nav.indexOf('en') === 0) pref = 'en';
+          }
+
+          if (pref === 'en' && !atEn) {
+            location.replace('/en/' + location.search + location.hash);
+          } else if (pref === 'es' && atEn) {
+            location.replace('/' + location.search + location.hash);
+          }
+        } catch (_) {
+          /* localStorage may be disabled (private mode); fall through and render. */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

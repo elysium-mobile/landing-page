@@ -1,0 +1,78 @@
+---
+/**
+ * Benefits — the "section" that introduces and stacks all three ValueBlocks.
+ *
+ * This is where the page's product story is told. SectionLead introduces the
+ * pair (employees ↔ HR) and the three blocks show: employee, HR, AI. The
+ * middle block is `flip`-ped so the page alternates left/right across the
+ * sequence, giving the section visual rhythm.
+ *
+ * All copy comes from i18n. Each block also sources its own viz component.
+ */
+import SectionLead from '../ui/SectionLead.astro';
+import ValueBlock from './ValueBlock.astro';
+import FeatureList from './FeatureList.astro';
+import FeatureItem from './FeatureItem.astro';
+import ValueLink from '../ui/ValueLink.astro';
+import EmployeeViz from '../viz/EmployeeViz.astro';
+import HRViz from '../viz/HRViz.astro';
+import AIViz from '../viz/AIViz.astro';
+import { useTranslations, localizedPath } from '../../i18n/utils';
+
+const t = useTranslations(Astro.currentLocale);
+const lp = (p: string) => localizedPath(Astro.currentLocale, p);
+---
+
+<section class="py-24 relative" id="benefits">
+  <div class="shell">
+    <SectionLead eyebrow={t('benefits.eyebrow')} title={t('benefits.title')}>
+      {t('benefits.body')}
+    </SectionLead>
+
+    <ValueBlock
+      eyebrow={t('block.emp.eyebrow')}
+      title={t('block.emp.title')}
+      body={t('block.emp.body')}
+      theme="employee"
+    >
+      <FeatureList slot="features">
+        <FeatureItem theme="employee" lead={t('block.emp.feat1.lead')}>{t('block.emp.feat1.rest')}</FeatureItem>
+        <FeatureItem theme="employee" lead={t('block.emp.feat2.lead')}>{t('block.emp.feat2.rest')}</FeatureItem>
+        <FeatureItem theme="employee" lead={t('block.emp.feat3.lead')}>{t('block.emp.feat3.rest')}</FeatureItem>
+      </FeatureList>
+      <ValueLink slot="link" href={lp('/how-it-works')}>{t('block.emp.link')}</ValueLink>
+      <EmployeeViz slot="viz" />
+    </ValueBlock>
+
+    <ValueBlock
+      eyebrow={t('block.hr.eyebrow')}
+      title={t('block.hr.title')}
+      body={t('block.hr.body')}
+      theme="hr"
+      flip
+    >
+      <FeatureList slot="features">
+        <FeatureItem theme="hr" lead={t('block.hr.feat1.lead')}>{t('block.hr.feat1.rest')}</FeatureItem>
+        <FeatureItem theme="hr" lead={t('block.hr.feat2.lead')}>{t('block.hr.feat2.rest')}</FeatureItem>
+        <FeatureItem theme="hr" lead={t('block.hr.feat3.lead')}>{t('block.hr.feat3.rest')}</FeatureItem>
+      </FeatureList>
+      <ValueLink slot="link" href={lp('/how-it-works#dashboard')}>{t('block.hr.link')}</ValueLink>
+      <HRViz slot="viz" />
+    </ValueBlock>
+
+    <ValueBlock
+      eyebrow={t('block.ai.eyebrow')}
+      title={t('block.ai.title')}
+      body={t('block.ai.body')}
+      theme="ai"
+    >
+      <FeatureList slot="features">
+        <FeatureItem theme="ai" lead={t('block.ai.feat1.lead')}>{t('block.ai.feat1.rest')}</FeatureItem>
+        <FeatureItem theme="ai" lead={t('block.ai.feat2.lead')}>{t('block.ai.feat2.rest')}</FeatureItem>
+        <FeatureItem theme="ai" lead={t('block.ai.feat3.lead')}>{t('block.ai.feat3.rest')}</FeatureItem>
+      </FeatureList>
+      <ValueLink slot="link" href={lp('/how-it-works#ai')}>{t('block.ai.link')}</ValueLink>
+      <AIViz slot="viz" />
+    </ValueBlock>
+  </div>
+</section>

@@ -1,0 +1,132 @@
+---
+/**
+ * ScenarioStepList — the numbered, clickable step list to the left of each
+ * scenario phone.
+ *
+ * Wiring (a tiny event bus on `document`):
+ *   - The list dispatches `softwork:scenario-step` with
+ *     `{ scenario, step, origin: 'list' }` whenever its active step changes
+ *     (auto-cycle tick or click).
+ *   - The matching phone listens for the same event with `origin === 'list'`
+ *     and updates its own state to reflect the chosen step.
+ *   - Conversely, a phone that advances itself (e.g. the AI chat reveal)
+ *     dispatches with `origin: 'phone'`. The list listens, ignores its own
+ *     `origin: 'list'` echoes, and just paints the active row.
+ *
+ *  The pattern keeps both sides decoupled — no shared store, no framework —
+ *  while making manual clicks "wins": the list flips a `manual` flag on the
+ *  first click that turns auto-cycling off for that scenario.
+ */
+import ScenarioStep from './ScenarioStep.astro';
+
+type Theme = 'teal' | 'sky' | 'navy';
+
+interface Step {
+  title: string;
+  desc: string;
+}
+
+interface Props {
+  /** Identifier broadcast to listeners ("report", "ai", "dashboard"). */
+  scenario: string;
+  steps: Step[];
+  /** 0-based starting active step. */
+  initial?: number;
+  /** Auto-advance the active step. Defaults to false. */
+  cycle?: boolean;
+  /** Tick length for auto-cycling, ms. */
+  cycleMs?: number;
+  /** Active accent colour. */
+  theme?: Theme;
+}
+
+const {
+  scenario,
+  steps,
+  initial = 0,
+  cycle = false,
+  cycleMs = 2600,
+  theme = 'teal',
+} = Astro.props;
+---
+
+<ul
+  class="list-none p-0 m-0 mt-7 flex flex-col gap-2"
+  data-scenario={scenario}
+  data-cycle={cycle ? 'true' : 'false'}
+  data-cycle-ms={cycleMs}
+  data-initial={initial}
+>
+  {steps.map((s, i) => (
+    <ScenarioStep
+      index={i + 1}
+      title={s.title}
+      desc={s.desc}
+      theme={theme}
+      active={i === initial}
+    />
+  ))}
+</ul>
+
+<script>
+  // Each instance scopes its own state via the [data-scenario] root.
+  document.querySelectorAll<HTMLUListElement>('ul[data-scenario]').forEach((root) => {
+    const scenario = root.dataset.scenario!;
+    const cycleMs = parseInt(root.dataset.cycleMs ?? '2600', 10);
+    const cycle = root.dataset.cycle === 'true';
+    const items = Array.from(root.querySelectorAll<HTMLLIElement>('li[data-step-index]'));
+    let active = parseInt(root.dataset.initial ?? '0', 10);
+    let manual = false;
+
+    /** Toggle `data-active` on each row. CSS does the rest. */
+    const paint = () => {
+      items.forEach((li, i) => {
+        li.dataset.active = i === active ? 'true' : 'false';
+      });
+    };
+
+    /** Tell the world. `origin` lets listeners ignore their own echo. */
+    const broadcast = () => {
+      document.dispatchEvent(
+        new CustomEvent('softwork:scenario-step', {
+          detail: { scenario, step: active, origin: 'list' },
+        })
+      );
+    };
+
+    // Click → set step, broadcast, kill auto-cycle (user is in control now).
+    items.forEach((li, i) => {
+      li.addEventListener('click', () => {
+        manual = true;
+        if (active === i) return;
+        active = i;
+        paint();
+        broadcast();
+      });
+    });
+
+    // External update (e.g. AI phone advancing itself). Ignore our own echo.
+    document.addEventListener('softwork:scenario-step', (e) => {
+      const d = (e instanceof CustomEvent ? e.detail : null) || {};
+      if (d.scenario !== scenario) return;
+      if (d.origin === 'list') return;
+      if (typeof d.step !== 'number') return;
+      const next = Math.max(0, Math.min(items.length - 1, d.step));
+      if (next === active) return;
+      active = next;
+      paint();
+    });
+
+    if (cycle) {
+      setInterval(() => {
+        if (manual || document.hidden) return;
+        active = (active + 1) % items.length;
+        paint();
+        broadcast();
+      }, cycleMs);
+    }
+
+    // Initial broadcast so the phone picks up the starting state.
+    broadcast();
+  });
+</script>

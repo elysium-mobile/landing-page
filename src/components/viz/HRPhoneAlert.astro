@@ -1,0 +1,54 @@
+---
+/**
+ * HRPhoneAlert — single alert row inside the HR phone "Alertas activas" card.
+ *
+ * Three tones map to the prototype's `danger`/`warn`/`info`:
+ *   - danger: red bg + alert-triangle
+ *   - warn:   amber bg + alert-triangle (default)
+ *   - info:   sky bg + sparkles (an "AI insight" alert)
+ */
+import { Icon } from 'astro-icon/components';
+
+type Tone = 'danger' | 'warn' | 'info';
+
+interface Props {
+  tone?: Tone;
+  title: string;
+  sub: string;
+}
+
+const { tone = 'warn', title, sub } = Astro.props;
+
+const tones: Record<Tone, { bg: string; iconBg: string; iconColor: string; icon: string }> = {
+  danger: {
+    bg: 'bg-danger/8',
+    iconBg: 'bg-danger/15',
+    iconColor: 'var(--color-danger-deep)',
+    icon: 'alert-triangle',
+  },
+  warn: {
+    bg: 'bg-warning/10',
+    iconBg: 'bg-warning/20',
+    iconColor: 'var(--color-warning-deep)',
+    icon: 'alert-triangle',
+  },
+  info: {
+    bg: 'bg-sky/8',
+    iconBg: 'bg-sky/15',
+    iconColor: 'var(--color-sky)',
+    icon: 'sparkles',
+  },
+};
+
+const tt = tones[tone];
+---
+
+<div class={`flex items-center gap-2 ${tt.bg} rounded-xl px-2.5 py-2 mb-1.5 last:mb-0`}>
+  <div class={`shrink-0 w-7 h-7 rounded-lg grid place-items-center ${tt.iconBg}`} style={`color:${tt.iconColor};`}>
+    <Icon name={tt.icon} width={13} height={13} />
+  </div>
+  <div class="min-w-0">
+    <div class="text-[11px] font-bold text-navy leading-tight truncate">{title}</div>
+    <div class="text-[10px] text-text-soft mt-0.5 truncate">{sub}</div>
+  </div>
+</div>

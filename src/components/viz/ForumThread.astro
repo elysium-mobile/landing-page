@@ -1,0 +1,35 @@
+---
+/**
+ * ForumThread — single row inside the small ForumSide card.
+ *
+ * `divide` adds a top border so threads after the first get separated. The
+ * avatar tint colours are passed in directly (no variants table) because each
+ * thread's avatar uses a different brand colour to hint at the topic.
+ */
+interface Props {
+  /** One-letter avatar initial. */
+  initial: string;
+  /** Thread title; one line, ellipses truncated visually if needed. */
+  title: string;
+  /** "23 replies · active" style metadata. */
+  meta: string;
+  /** Avatar background CSS (rgba or `var(--color-*)`). */
+  avatarBg: string;
+  /** Avatar text colour CSS. */
+  avatarColor: string;
+  /** Render a top divider before this thread. Set to true for all but the first. */
+  divide?: boolean;
+}
+
+const { initial, title, meta, avatarBg, avatarColor, divide = false } = Astro.props;
+---
+
+<div class:list={['flex gap-2.5 py-2', divide && 'border-t border-line']}>
+  <div class="w-6.5 h-6.5 rounded-full grid place-items-center text-[11px] font-bold shrink-0" style={`background:${avatarBg};color:${avatarColor};`}>
+    {initial}
+  </div>
+  <div>
+    <div class="text-[12px] font-semibold text-navy leading-tight">{title}</div>
+    <div class="text-[10px] text-text-mute mt-0.5">{meta}</div>
+  </div>
+</div>

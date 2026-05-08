@@ -1,0 +1,29 @@
+---
+/**
+ * HRPhoneTeamBar — single team row in the "Clima por equipo" card.
+ *
+ * Layout: [name] [progress bar] [percentage]. The bar fill colour swaps to
+ * amber when the team scores below the warn threshold (≤ 50). Colour stays
+ * teal otherwise.
+ */
+interface Props {
+  /** Team name. */
+  name: string;
+  /** 0..100 percent. */
+  pct: number;
+}
+
+const { name, pct } = Astro.props;
+const warn = pct <= 50;
+---
+
+<div class="grid grid-cols-[60px_1fr_28px] items-center gap-2 mb-1.5 last:mb-0">
+  <div class="text-[10px] text-navy font-medium">{name}</div>
+  <div class="h-1.5 rounded-full bg-paper overflow-hidden">
+    <div
+      class="h-full rounded-full transition-all duration-300"
+      style={`width:${pct}%;background:${warn ? 'var(--color-warning)' : 'var(--color-teal)'};`}
+    ></div>
+  </div>
+  <div class="text-[10px] font-semibold text-navy text-right">{pct}</div>
+</div>

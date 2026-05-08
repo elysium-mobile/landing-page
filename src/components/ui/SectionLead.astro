@@ -1,0 +1,24 @@
+---
+/**
+ * SectionLead — centred eyebrow + h2 + supporting paragraph.
+ *
+ * Used at the top of large sections (Benefits). The paragraph body comes from
+ * a slot so callers can include inline emphasis without escaping HTML in props.
+ */
+interface Props {
+  /** Small uppercase tag. */
+  eyebrow: string;
+  /** Big section title. */
+  title: string;
+}
+
+const { eyebrow, title } = Astro.props;
+---
+
+<div class="text-center max-w-180 mx-auto mb-14">
+  <span class="t-section-eyebrow block mb-3.5">{eyebrow}</span>
+  <h2 class="t-section-title">{title}</h2>
+  <p class="mt-4.5 text-[17px] leading-[1.55] text-text-soft">
+    <slot />
+  </p>
+</div>

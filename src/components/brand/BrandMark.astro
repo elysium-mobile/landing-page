@@ -1,0 +1,47 @@
+---
+/**
+ * BrandMark — the Elysium logo tile.
+ *
+ * Renders an <img> sized by the `size` prop. Two important details:
+ *
+ *   1. The src is **root-absolute** (`/assets/...`). A relative path resolves
+ *      differently from each route (`/`, `/en/`, `/how-it-works/`), which both
+ *      breaks the HTTP cache *and* hits the dev-server SPA fallback on routes
+ *      where the resolved path doesn't exist — that's what caused the "logo
+ *      keeps reloading" loop in dev tools. Absolute path → one canonical URL,
+ *      one cache entry.
+ *
+ *   2. We pass `width`/`height` to the <img> so the browser can match it to a
+ *      cached entry without layout-shift-driven re-requests, and `loading="lazy"
+ *      decoding="async"` so the off-screen footer logo doesn't compete with
+ *      the header logo on first paint.
+ */
+interface Props {
+  /** Edge length in px. Defaults to 32 (header logo). */
+  size?: number;
+  /** Extra utility classes appended to the wrapper. */
+  class?: string;
+}
+
+const { size = 32, class: extra = '' } = Astro.props;
+---
+
+<span
+  class={`inline-flex items-center justify-center ${extra}`.trim()}
+  style={`width:${size}px;height:${size}px;border-radius:${Math.round(size * 0.28)}px;`}
+>
+  <!--
+    Eager loading on purpose. The logo is tiny and appears in the header above
+    the fold; with `loading="lazy"` browsers re-evaluate the lazy decision on
+    every layout shift, which combined with DevTools `Disable cache` makes the
+    asset re-fetch on every chat-tick repaint.
+  -->
+  <img
+    src="/assets/images/elysium-logo.png"
+    alt="Elysium logo"
+    width={size}
+    height={size}
+    decoding="async"
+    class="w-full h-full object-contain"
+  />
+</span>

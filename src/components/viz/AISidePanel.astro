@@ -1,0 +1,68 @@
+---
+/**
+ * AISidePanel — small floating card (signals detected / privacy info) used
+ * around the CFAIPhone in Scenario 2.
+ *
+ * Pure data: each row is `{ label, value }`. The icon and title are passed in
+ * by the caller. Floats with a 6-7s `floaty` cycle to match the rest of the
+ * page's idle motion.
+ */
+import { Icon } from 'astro-icon/components';
+
+interface Row {
+  label: string;
+  /** Right-side value. Strings render as text; missing = a check icon. */
+  value?: string;
+  /** Override the value-text colour (e.g. green for "low"). */
+  color?: string;
+  /** Render a check icon instead of value text. */
+  check?: boolean;
+}
+
+interface Props {
+  /** Local-icon name shown in the title row. */
+  icon: string;
+  /** Title shown next to the icon. */
+  title: string;
+  /** Two or three rows of {label,value}. */
+  rows: Row[];
+  /** Tailwind position utilities, e.g. "top-4 -right-12". */
+  position?: string;
+  /** Tailwind width util. */
+  width?: string;
+  /** Animation delay so multiple panels don't bob in sync. */
+  delay?: string;
+}
+
+const {
+  icon,
+  title,
+  rows,
+  position = 'top-2 -right-8',
+  width = 'w-52',
+  delay = '0s',
+} = Astro.props;
+---
+
+<div
+  class:list={[
+    'absolute z-20 bg-white rounded-2xl border border-navy/6 px-3 py-3 max-md:right-2',
+    position,
+    width,
+  ]}
+  style={`box-shadow:var(--shadow-card-lg);animation:floaty 6s ease-in-out infinite;animation-delay:${delay};`}
+>
+  <h5 class="m-0 mb-2 text-[10px] font-semibold tracking-widest uppercase text-text-soft inline-flex items-center gap-1.5">
+    <Icon name={icon} width={11} height={11} /> {title}
+  </h5>
+  {rows.map((r) => (
+    <div class="flex items-center justify-between py-1 text-[11px]">
+      <span class="text-text-soft">{r.label}</span>
+      {r.check ? (
+        <span class="text-teal"><Icon name="check" width={12} height={12} /></span>
+      ) : (
+        <span class="font-semibold text-navy" style={r.color ? `color:${r.color}` : ''}>{r.value}</span>
+      )}
+    </div>
+  ))}
+</div>

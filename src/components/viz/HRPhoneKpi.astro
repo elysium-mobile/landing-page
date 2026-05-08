@@ -1,0 +1,41 @@
+---
+/**
+ * HRPhoneKpi — small KPI cell inside the HR phone's 2×2 grid.
+ *
+ * Note: this is the *phone* variant of HRStat, designed to fit in a 130px-wide
+ * column with a smaller value font. The landing's HRStat is for desktop dash.
+ *
+ * `tone="warn"` adds an amber background to the cell so the "Reportes" tile
+ * stands out without needing a full alert. `direction` colours the delta.
+ */
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  /** Small uppercase label. */
+  label: string;
+  /** Big value. */
+  value: string;
+  /** Delta number (e.g. "0.8"). */
+  delta: string;
+  /** Up/down direction — picks the trend icon. */
+  trend?: 'up' | 'down';
+  /** Colour intent for the delta — green for good, red for bad. */
+  direction?: 'good' | 'bad';
+  /** Subtle bg accent. */
+  tone?: 'default' | 'warn';
+}
+
+const { label, value, delta, trend = 'up', direction = 'good', tone = 'default' } = Astro.props;
+
+const deltaColor = direction === 'good' ? 'text-teal' : 'text-warning-deep';
+const icon = trend === 'up' ? 'trending-up' : 'trending-down';
+const bg = tone === 'warn' ? 'bg-warning/10' : 'bg-paper';
+---
+
+<div class={`${bg} rounded-xl px-3 py-2.5`}>
+  <div class="text-[9px] font-semibold tracking-widest uppercase text-text-soft">{label}</div>
+  <div class="mt-0.5 font-extrabold text-[20px] text-navy tracking-[-0.02em]">{value}</div>
+  <div class={`text-[10px] font-semibold inline-flex items-center gap-0.5 ${deltaColor}`}>
+    <Icon name={icon} width={10} height={10} /> {delta}
+  </div>
+</div>

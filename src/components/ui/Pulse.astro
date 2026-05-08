@@ -1,0 +1,28 @@
+---
+/**
+ * Pulse — small icon disc with an animated radar ring.
+ *
+ * Used inside HeroEyebrow to draw the eye to the "live" pill. The ring is a
+ * pseudo-element that scales 1×→1.7× and fades to 0 on a 2.4s loop
+ * (`@keyframes ping-soft` in global.css).
+ */
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  /** Local-icon name from src/icons/. Defaults to a heart for the live-pulse vibe. */
+  icon?: string;
+  /** Pixel size of the inner glyph. The disc itself stays 22px. */
+  size?: number;
+}
+
+const { icon = 'heart', size = 12 } = Astro.props;
+---
+
+<span class="relative grid place-items-center w-5.5 h-5.5 rounded-full bg-mint">
+  <Icon name={icon} class="text-teal" width={size} height={size} />
+  <!-- Animated ring; inset:0 keeps it the same size as the disc, then scale-up. -->
+  <span
+    class="absolute inset-0 rounded-full border-2 border-teal"
+    style="animation: ping-soft 2.4s ease-out infinite"
+  ></span>
+</span>

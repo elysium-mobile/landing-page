@@ -1,0 +1,34 @@
+---
+/**
+ * FeatureItem — bullet row used inside FeatureList.
+ *
+ * The check disc tint depends on `theme` so each value-block picks up its own
+ * accent (mint for employee, navy-soft for HR, sky-soft for AI). The `lead`
+ * prop is rendered bold; the slot is the trailing non-bold text.
+ */
+import { Icon } from 'astro-icon/components';
+
+type Theme = 'employee' | 'hr' | 'ai';
+
+interface Props {
+  theme?: Theme;
+  /** Bold lead phrase (rendered as <strong>). */
+  lead: string;
+}
+
+const { theme = 'employee', lead } = Astro.props;
+
+// Per-theme tint of the round check disc.
+const checkTones: Record<Theme, string> = {
+  employee: 'bg-mint text-teal-deep',
+  hr: 'bg-navy/10 text-navy',
+  ai: 'bg-sky/16 text-sky',
+};
+---
+
+<li class="flex items-start gap-3 text-[15px] leading-normal text-ink">
+  <span class={`shrink-0 w-5.5 h-5.5 rounded-full grid place-items-center mt-px ${checkTones[theme]}`}>
+    <Icon name="check" width={14} height={14} />
+  </span>
+  <span><strong class="font-semibold">{lead}</strong><slot /></span>
+</li>

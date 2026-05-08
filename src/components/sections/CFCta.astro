@@ -1,0 +1,42 @@
+---
+/**
+ * CFCta — closing CTA banner for the how-it-works page.
+ *
+ * Reuses the same gradient + on-dark Button variants as the landing CTABanner,
+ * but with a tighter copy block and only two CTAs (demo + back-to-home).
+ */
+import Button from '../ui/Button.astro';
+import { Icon } from 'astro-icon/components';
+import { useTranslations, localizedPath } from '../../i18n/utils';
+
+const t = useTranslations(Astro.currentLocale);
+const lp = (p: string) => localizedPath(Astro.currentLocale, p);
+---
+
+<div class="shell">
+  <div
+    class="relative mt-16 mx-auto rounded-3xl p-12 text-white overflow-hidden text-center"
+    style="background:linear-gradient(135deg, var(--color-navy) 0%, #2A6BAA 50%, var(--color-teal) 130%);"
+  >
+    <!-- Top-right mint glow — same recipe as the landing CTA but smaller. -->
+    <div
+      class="pointer-events-none absolute -top-20 -right-20 w-80 h-80"
+      style="background:radial-gradient(circle, rgba(165,227,216,0.30), transparent 60%);"
+    ></div>
+    <div class="relative z-10 max-w-3xl mx-auto">
+      <h3 class="m-0 mb-3 font-extrabold text-[28px] sm:text-[32px] tracking-[-0.02em] leading-[1.1]">
+        {t('cf.cta.title')}
+      </h3>
+      <p class="m-0 mb-7 text-white/78 text-[16px] leading-normal max-w-130 mx-auto">
+        {t('cf.cta.body')}
+      </p>
+      <div class="flex gap-3 flex-wrap justify-center">
+        <Button href="/#demo" variant="on-dark" size="lg">
+          {t('cf.cta.demo')}
+          <Icon name="arrow-right" width={16} height={16} />
+        </Button>
+        <Button href={lp('/')} variant="on-dark-ghost" size="lg">{t('cf.cta.back')}</Button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+---
+/**
+ * AITyping — three dots that bounce while the AI is "thinking".
+ *
+ * Pure CSS animation via the `bounce-dot` keyframe with staggered delays
+ * (0 / 150ms / 300ms). The cycler in AIChat injects this markup imperatively;
+ * this file documents the intended DOM and stays available as a component.
+ */
+---
+
+<div class="self-start bg-paper px-3.5 py-2.5 rounded-3.5 rounded-bl-sm inline-flex gap-1">
+  <span class="w-1.5 h-1.5 rounded-full bg-text-mute" style="animation:bounce-dot 1.2s infinite;"></span>
+  <span class="w-1.5 h-1.5 rounded-full bg-text-mute" style="animation:bounce-dot 1.2s infinite 0.15s;"></span>
+  <span class="w-1.5 h-1.5 rounded-full bg-text-mute" style="animation:bounce-dot 1.2s infinite 0.3s;"></span>
+</div>

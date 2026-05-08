@@ -1,0 +1,60 @@
+---
+/**
+ * Button — the only button primitive used across the site.
+ *
+ * Renders an `<a>` if `href` is set, otherwise a real `<button>`. Variants and
+ * sizes are mapped through the `variants` / `sizes` lookup tables; new visual
+ * styles should land here rather than as one-off classes elsewhere.
+ *
+ * Variants worth knowing:
+ *   - `primary`        — solid navy (default page CTA).
+ *   - `ghost`          — transparent with a navy border (secondary CTA).
+ *   - `on-dark`        — solid white over a dark/gradient background.
+ *   - `on-dark-ghost`  — transparent with white border, paired with `on-dark`.
+ *
+ * The hover lift (`-translate-y-px`) plus shadow halo is shared by all solid
+ * variants so the page feels consistent.
+ */
+type Variant = 'primary' | 'sky' | 'teal' | 'ghost' | 'on-dark' | 'on-dark-ghost';
+type Size = 'md' | 'lg';
+
+interface Props {
+  /** When set, renders as `<a href>` instead of `<button>`. */
+  href?: string;
+  variant?: Variant;
+  size?: Size;
+  /** Extra utility classes appended to the computed class list. */
+  class?: string;
+  /** Forwarded to `<button>` only. Ignored when `href` is present. */
+  type?: 'button' | 'submit';
+}
+
+const { href, variant = 'primary', size = 'md', class: extra = '', type = 'button' } = Astro.props;
+
+// Shared layout, shape and motion. Variant/size only override colour & sizing.
+const base =
+  'inline-flex items-center justify-center gap-2 rounded-[var(--radius-button)] font-semibold tracking-[0.01em] whitespace-nowrap transition duration-200 ease-out hover:-translate-y-px';
+
+const sizes: Record<Size, string> = {
+  md: 'h-11 px-5 text-[14px]',
+  lg: 'h-13 px-6 text-[15px]',
+};
+
+const variants: Record<Variant, string> = {
+  primary: 'bg-navy text-white hover:shadow-[var(--shadow-navy-press)]',
+  sky: 'bg-sky text-white hover:shadow-[var(--shadow-press)]',
+  teal: 'bg-teal text-white hover:shadow-[var(--shadow-press)]',
+  ghost:
+    'bg-transparent text-navy border border-line-strong hover:border-navy hover:bg-navy/5',
+  'on-dark': 'bg-white text-navy hover:shadow-[var(--shadow-card-lg)]',
+  'on-dark-ghost':
+    'bg-transparent text-white border border-white/40 hover:bg-white/10 hover:border-white',
+};
+
+const cls = `${base} ${sizes[size]} ${variants[variant]} ${extra}`.trim();
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag class={cls} href={href} type={href ? undefined : type}>
+  <slot />
+</Tag>

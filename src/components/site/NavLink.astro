@@ -1,0 +1,30 @@
+---
+/**
+ * NavLink — single nav anchor with an `active` underline.
+ *
+ * The active indicator is a 2-px teal pill positioned absolutely under the link
+ * so it doesn't shift layout on toggle.
+ */
+interface Props {
+  /** Absolute path; pre-localised by the caller. */
+  href: string;
+  /** Render the teal underline if true. */
+  active?: boolean;
+}
+
+const { href, active = false } = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={[
+    'relative py-1.5 px-0.5 text-[14px] font-medium transition-colors duration-150',
+    active ? 'text-navy' : 'text-ink hover:text-navy',
+  ]}
+  aria-current={active ? 'page' : undefined}
+>
+  <slot />
+  {active && (
+    <span class="absolute left-0 right-0 -bottom-0.5 h-0.5 rounded bg-teal"></span>
+  )}
+</a>

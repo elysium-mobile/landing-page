@@ -1,0 +1,60 @@
+---
+/**
+ * MoodSelector — five emoji buttons inside the phone home preview.
+ *
+ * Interactivity is driven by a tiny client `<script>` at the bottom: clicking
+ * a button flips its `data-active` attribute to "true" and clears all the
+ * others. Tailwind's `data-[active=true]:` variants do the rest of the visual.
+ *
+ * Multiple instances on the same page each get their own scoped click handler
+ * via `querySelectorAll('[data-mood-selector]')`.
+ */
+import Chip from '../ui/Chip.astro';
+import { Icon } from 'astro-icon/components';
+import { useTranslations } from '../../i18n/utils';
+
+const moods = ['😞', '😕', '😐', '🙂', '😄'];
+const initial = 3; // Pre-select the second-highest face on first paint.
+const t = useTranslations(Astro.currentLocale);
+---
+
+<div class="bg-white rounded-2xl p-3.5 shadow-(--shadow-card) mb-3.5">
+  <div class="flex justify-between mb-3 text-[13px] font-semibold text-navy">
+    <span>{t('phone.mood.title')}</span>
+    <Chip variant="mint" compact>
+      <Icon name="lock" width={10} height={10} /> {t('phone.mood.anon')}
+    </Chip>
+  </div>
+  <div class="flex justify-between gap-1" data-mood-selector>
+    {moods.map((emoji, i) => (
+      <button
+        type="button"
+        data-mood-button
+        data-active={i === initial ? 'true' : 'false'}
+        class="flex-1 h-9.5 rounded-[10px] text-[18px] grid place-items-center border-2 border-transparent bg-paper transition-all duration-200 hover:bg-teal/8 data-[active=true]:bg-teal/12 data-[active=true]:border-teal data-[active=true]:-translate-y-0.5"
+        aria-label={`mood-${i + 1}`}
+        aria-pressed={i === initial ? 'true' : 'false'}
+      >
+        {emoji}
+      </button>
+    ))}
+  </div>
+</div>
+
+<script>
+  // Wire up every mood-selector instance independently.
+  document.querySelectorAll('[data-mood-selector]').forEach((root) => {
+    const buttons = root.querySelectorAll<HTMLButtonElement>('[data-mood-button]');
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        // Reset every button, then mark the clicked one.
+        buttons.forEach((b) => {
+          b.setAttribute('data-active', 'false');
+          b.setAttribute('aria-pressed', 'false');
+        });
+        btn.setAttribute('data-active', 'true');
+        btn.setAttribute('aria-pressed', 'true');
+      });
+    });
+  });
+</script>

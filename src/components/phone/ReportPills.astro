@@ -1,0 +1,36 @@
+---
+/**
+ * ReportPills — five category pills inside the report phone.
+ *
+ * The active pill is hard-coded (index 1, "Sobrecarga") because the
+ * user-flow's "selected category" doesn't change as the stage cycles in this
+ * prototype. To make it interactive, expose `active` as a prop.
+ */
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations(Astro.currentLocale);
+
+const cats = [
+  t('cf.report.cat.climate'),
+  t('cf.report.cat.overload'),
+  t('cf.report.cat.leadership'),
+  t('cf.report.cat.harassment'),
+  t('cf.report.cat.other'),
+];
+const active = 1;
+---
+
+<div class="flex flex-wrap gap-1.5">
+  {cats.map((c, i) => (
+    <span
+      class:list={[
+        'inline-flex items-center px-2.5 h-7 rounded-full text-[11px] font-medium transition-colors duration-150',
+        i === active
+          ? 'bg-teal text-white'
+          : 'bg-paper text-text-soft border border-line',
+      ]}
+    >
+      {c}
+    </span>
+  ))}
+</div>

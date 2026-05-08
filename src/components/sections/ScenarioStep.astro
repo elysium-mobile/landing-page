@@ -1,0 +1,56 @@
+---
+/**
+ * ScenarioStep — single row in a ScenarioStepList.
+ *
+ * Visual: numbered bullet + title + sub. The whole row is a click target.
+ *
+ * The active state is driven entirely by the `data-active` attribute so the
+ * accompanying ScenarioStepList script can flip rows in/out of "active" by
+ * toggling a single attribute. Tailwind's `data-[active=true]:` and the named
+ * `group/step` make the row + bullet style respond together — no inline-style
+ * mutation needed.
+ */
+type Theme = 'teal' | 'sky' | 'navy';
+
+interface Props {
+  /** 1-based number rendered in the bullet circle. */
+  index: number;
+  /** Bold step title. */
+  title: string;
+  /** Supporting one-liner. */
+  desc: string;
+  /** Whether this row is the currently-active stage. Wired by ScenarioStepList. */
+  active?: boolean;
+  /** Picks the bullet's idle accent colour. */
+  theme?: Theme;
+}
+
+const { index, title, desc, active = false, theme = 'teal' } = Astro.props;
+
+// Idle bullet colour per theme. Active state overrides via data-active variants.
+const dotIdle: Record<Theme, string> = {
+  teal: 'bg-teal/15 text-teal-deep',
+  sky: 'bg-sky/15 text-navy',
+  navy: 'bg-navy/10 text-navy',
+};
+---
+
+<li
+  data-step-index={index - 1}
+  data-active={active ? 'true' : 'false'}
+  class="group/step flex gap-3.5 items-start p-3.5 rounded-2xl border border-transparent cursor-pointer transition-colors duration-200 hover:bg-white/60 data-[active=true]:bg-navy/5 data-[active=true]:border-navy/30"
+>
+  <div
+    class:list={[
+      'shrink-0 w-7 h-7 rounded-full grid place-items-center text-[12px] font-bold transition-colors duration-200',
+      dotIdle[theme],
+      'group-data-[active=true]/step:bg-navy group-data-[active=true]/step:text-white',
+    ]}
+  >
+    {index}
+  </div>
+  <div>
+    <div class="text-[15px] font-semibold text-navy leading-tight">{title}</div>
+    <div class="text-[13px] text-text-soft mt-1 leading-snug">{desc}</div>
+  </div>
+</li>

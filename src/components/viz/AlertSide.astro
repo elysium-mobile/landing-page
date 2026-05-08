@@ -1,0 +1,25 @@
+---
+/**
+ * AlertSide — small floating warning card pinned top-right of HRDashboard.
+ *
+ * The amber border (rgba 232,168,56) and matching disc tint reinforce the
+ * "warning" semantics. Same `floaty` keyframe at 6s for parity with FloatCards.
+ */
+import { Icon } from 'astro-icon/components';
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations(Astro.currentLocale);
+---
+
+<div
+  class="absolute -top-7 -right-9 z-20 bg-white rounded-3.5 px-3.5 py-3 flex items-center gap-2.5 max-md:right-2"
+  style="box-shadow:var(--shadow-card-lg);border:1px solid rgba(232,168,56,0.30);animation:floaty 6s ease-in-out infinite;"
+>
+  <div class="w-8 h-8 rounded-lg grid place-items-center" style="background:rgba(232,168,56,0.18);color:var(--color-warning-deep);">
+    <Icon name="alert-triangle" width={16} height={16} />
+  </div>
+  <div>
+    <div class="text-[12px] font-bold text-navy">{t('viz.hr.alert.title')}</div>
+    <div class="text-[11px] text-text-soft">{t('viz.hr.alert.sub')}</div>
+  </div>
+</div>

@@ -1,0 +1,89 @@
+---
+/**
+ * Scenario — generic 2-column "copy + phone stage" wrapper for the
+ * how-it-works page.
+ *
+ * Three slots: `steps` (the ScenarioStepList) and `stage` (the right-hand
+ * phone column with its background glow). The header (numbered eyebrow +
+ * title + lead) is built from props.
+ *
+ * `flip` reverses copy/stage on lg+ via direction:rtl, the same trick used
+ * in ValueBlock on the landing page.
+ */
+type Theme = 'teal' | 'sky' | 'navy';
+
+interface Props {
+  /** Anchor id for the in-page tab navigator (e.g. "report", "ai", "dashboard"). */
+  id: string;
+  /** Step number (1, 2, 3) shown inside the eyebrow chip. */
+  num: number;
+  /** Eyebrow label ("Pantalla 1 · Empleado"). */
+  eyebrow: string;
+  /** Big section heading. */
+  title: string;
+  /** Lead paragraph below the heading. */
+  body: string;
+  /** Picks the eyebrow chip + accent colour. */
+  theme?: Theme;
+  /** Reverse the column order on lg+. */
+  flip?: boolean;
+}
+
+const { id, num, eyebrow, title, body, theme = 'teal', flip = false } = Astro.props;
+
+// Eyebrow text + bullet colour per theme — keeps each scenario visually distinct.
+const eyebrowColor: Record<Theme, string> = {
+  teal: 'text-teal',
+  sky: 'text-sky',
+  navy: 'text-navy',
+};
+const numBg: Record<Theme, string> = {
+  teal: 'bg-teal text-white',
+  sky: 'bg-sky text-white',
+  navy: 'bg-navy text-white',
+};
+// Per-scenario radial backdrop behind the phone — same recipe as VizShell.
+const stageBg: Record<Theme, string> = {
+  teal:
+    'radial-gradient(circle at 30% 20%, rgba(165,227,216,0.4), transparent 60%), radial-gradient(circle at 80% 80%, rgba(77,168,218,0.20), transparent 60%)',
+  sky:
+    'radial-gradient(circle at 30% 30%, rgba(77,168,218,0.22), transparent 60%), radial-gradient(circle at 80% 70%, rgba(25,164,161,0.20), transparent 60%)',
+  navy:
+    'radial-gradient(circle at 70% 20%, rgba(28,75,120,0.16), transparent 60%), radial-gradient(circle at 20% 80%, rgba(232,168,56,0.18), transparent 60%)',
+};
+---
+
+<section class="py-20 relative" id={id}>
+  <div class="shell">
+    <div
+      class:list={[
+        'grid items-center gap-12 lg:gap-16 grid-cols-1 lg:grid-cols-[1fr_1fr]',
+        flip && 'lg:[direction:rtl]',
+      ]}
+    >
+      <!-- Copy column — slot for the step list. -->
+      <div class="lg:[direction:ltr]">
+        <div class={`inline-flex items-center gap-2.5 text-[12px] font-semibold tracking-[0.16em] uppercase ${eyebrowColor[theme]} mb-4`}>
+          <span class={`grid place-items-center w-6 h-6 rounded-full text-[11px] font-bold ${numBg[theme]}`}>
+            {num}
+          </span>
+          {eyebrow}
+        </div>
+        <h2 class="font-extrabold leading-[1.1] tracking-[-0.015em] text-navy m-0 mb-5" style="font-size:clamp(28px,3.2vw,40px);">
+          {title}
+        </h2>
+        <p class="text-[16px] leading-[1.6] text-text-soft m-0 mb-2 max-w-130">{body}</p>
+        <slot name="steps" />
+      </div>
+
+      <!-- Stage column — phone + side panels. -->
+      <div class="lg:[direction:ltr] relative flex items-center justify-center min-h-[640px]">
+        <!-- Stage glow sits behind the phone; -inset-8 gives it slight overflow. -->
+        <div class="absolute inset-0 -m-6 rounded-4xl z-0" style={`background:${stageBg[theme]};`}></div>
+        <div class="relative z-10">
+          <slot name="stage" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
