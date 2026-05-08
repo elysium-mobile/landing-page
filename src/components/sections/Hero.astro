@@ -21,7 +21,14 @@ const t = useTranslations(Astro.currentLocale);
 const lp = (p: string) => localizedPath(Astro.currentLocale, p);
 ---
 
-<section class="hero relative pt-10 pb-10 sm:pt-14 sm:pb-12 lg:pt-16 lg:pb-12 overflow-x-hidden overflow-y-visible">
+<!--
+  IMPORTANT: use `overflow-x-clip`, not `overflow-x-hidden`.
+  Per the CSS spec, when overflow-x is `hidden` and overflow-y is `visible`,
+  the visible axis is silently computed as `auto` — which spawns an unwanted
+  vertical scrollbar inside the section. `overflow-x-clip` is special-cased
+  and leaves the y-axis genuinely visible.
+-->
+<section class="hero relative pt-10 pb-10 sm:pt-14 sm:pb-12 lg:pt-16 lg:pb-12 overflow-x-clip">
   <!-- Two giant soft halos: top-right sky, bottom-left mint. Pure decoration. -->
   <div class="hero-glow-a"></div>
   <div class="hero-glow-b"></div>
