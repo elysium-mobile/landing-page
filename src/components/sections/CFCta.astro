@@ -31,7 +31,7 @@ const lp = (p: string) => localizedPath(Astro.currentLocale, p);
         {t('cf.cta.body')}
       </p>
       <div class="flex gap-3 flex-wrap justify-center">
-        <Button href="/#demo" variant="on-dark" size="lg">
+        <Button href={lp('/request-demo')} variant="on-dark" size="lg">
           {t('cf.cta.demo')}
           <Icon name="arrow-right" width={16} height={16} />
         </Button>

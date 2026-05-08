@@ -1,0 +1,70 @@
+---
+/**
+ * DemoPlaceholderPhone — phone mock used by the request-demo placeholder page.
+ *
+ * Reuses PhoneFrame so the device chrome (notch + status bar + chassis) stays
+ * consistent with the landing's hero phone. The screen is filled with a simple
+ * "coming soon" composition: a sparkle disc, a title, a body line, and a faux
+ * progress bar so it doesn't feel empty.
+ *
+ * No interactivity — purely a visual companion to the page's headline.
+ */
+import { Icon } from 'astro-icon/components';
+import PhoneFrame from './PhoneFrame.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations(Astro.currentLocale);
+---
+
+<PhoneFrame>
+  <div class="flex flex-col flex-1 px-5 py-5" style="background:linear-gradient(180deg, var(--color-paper) 0%, #FFFFFF 30%);">
+    <!-- Pinned tag at the top — small "BUILD · alpha" chip. -->
+    <div class="flex justify-center mb-6">
+      <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-navy/10 text-navy text-[10px] font-semibold tracking-widest uppercase">
+        {t('demo.phone.tag')}
+      </span>
+    </div>
+
+    <!-- Centered illustration block. -->
+    <div class="flex flex-col items-center text-center flex-1 justify-center -mt-4">
+      <!-- Outer halo + inner gradient disc. -->
+      <div class="relative mb-5">
+        <span
+          class="absolute -inset-3 rounded-full opacity-60"
+          style="background:radial-gradient(circle, rgba(165,227,216,0.55), transparent 70%);animation:floaty 6s ease-in-out infinite;"
+        ></span>
+        <span
+          class="relative grid place-items-center w-16 h-16 rounded-2xl text-white"
+          style="background:linear-gradient(135deg, var(--color-navy), var(--color-sky) 60%, var(--color-teal));"
+        >
+          <Icon name="sparkles" width={28} height={28} />
+        </span>
+      </div>
+
+      <h3 class="m-0 mb-2 text-[20px] font-extrabold text-navy tracking-[-0.01em]">
+        {t('demo.phone.title')}
+      </h3>
+      <p class="m-0 text-[12px] text-text-soft leading-snug max-w-50">
+        {t('demo.phone.body')}
+      </p>
+    </div>
+
+    <!-- Faux progress bar — never animates; this is presentational. -->
+    <div class="mb-2">
+      <div class="flex items-center justify-between mb-1.5 text-[10px] uppercase tracking-widest font-semibold text-text-soft">
+        <span>{t('demo.phone.progress.label')}</span>
+        <span class="text-teal">{t('demo.phone.progress.value')}</span>
+      </div>
+      <div class="h-1.5 rounded-full bg-paper overflow-hidden">
+        <div
+          class="h-full rounded-full"
+          style="width:78%;background:linear-gradient(90deg, var(--color-sky), var(--color-teal));"
+        ></div>
+      </div>
+    </div>
+
+    <div class="text-center text-[11px] font-semibold text-text-mute tracking-widest uppercase">
+      {t('demo.phone.eta')}
+    </div>
+  </div>
+</PhoneFrame>

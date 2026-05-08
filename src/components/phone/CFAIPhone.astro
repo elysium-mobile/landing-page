@@ -84,7 +84,7 @@ const seq: Step[] = [
           }
           if (m.kind === 'typing') {
             return (
-              <div data-step={i} hidden class="self-start bg-paper px-3 py-2 rounded-2xl rounded-bl-[4px] inline-flex gap-1">
+              <div data-step={i} data-kind="typing" hidden class="self-start bg-paper px-3 py-2 rounded-2xl rounded-bl-sm inline-flex gap-1">
                 <span class="w-1.5 h-1.5 rounded-full bg-text-mute" style="animation:bounce-dot 1.2s infinite;"></span>
                 <span class="w-1.5 h-1.5 rounded-full bg-text-mute" style="animation:bounce-dot 1.2s infinite 0.15s;"></span>
                 <span class="w-1.5 h-1.5 rounded-full bg-text-mute" style="animation:bounce-dot 1.2s infinite 0.3s;"></span>
@@ -137,14 +137,17 @@ const seq: Step[] = [
     let revealed = start;
     let manual = false; // flips true on user click; pauses auto-reveal
 
-    /** Show messages [0..revealed), hide the rest. */
+    /** Show messages [0..revealed), with one twist: typing dots are kept
+     *  visible only while they're the *tip* of the reveal. Once the bot's
+     *  bubble arrives behind the dots, the dots hide — otherwise they linger
+     *  permanently above their reply. */
     const paint = () => {
       items.forEach((el, i) => {
-        if (i < revealed) {
-          el.removeAttribute('hidden');
-        } else {
-          el.setAttribute('hidden', '');
-        }
+        const isTyping = el.dataset.kind === 'typing';
+        const isTip = i === revealed - 1;
+        const visible = isTyping ? (i < revealed && isTip) : i < revealed;
+        if (visible) el.removeAttribute('hidden');
+        else el.setAttribute('hidden', '');
       });
     };
 

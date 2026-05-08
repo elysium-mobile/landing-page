@@ -7,13 +7,16 @@
  * the navy/teal background needs different colour treatment than the
  * default-light context.
  *
- * The `id="demo"` matches all the "Request Demo" links across the page.
+ * The `id="demo"` is kept as a fallback anchor in case any external link
+ * still references `#demo`. The primary "Request Demo" CTAs now route to
+ * /request-demo (a placeholder page; mobile apps still in development).
  */
 import Button from '../ui/Button.astro';
 import { Icon } from 'astro-icon/components';
-import { useTranslations } from '../../i18n/utils';
+import { useTranslations, localizedPath } from '../../i18n/utils';
 
 const t = useTranslations(Astro.currentLocale);
+const lp = (p: string) => localizedPath(Astro.currentLocale, p);
 ---
 
 <div class="shell" id="demo">
@@ -36,7 +39,7 @@ const t = useTranslations(Astro.currentLocale);
         </p>
       </div>
       <div class="flex gap-3 flex-wrap lg:justify-end">
-        <Button href="#" variant="on-dark" size="lg">
+        <Button href={lp('/request-demo')} variant="on-dark" size="lg">
           {t('cta.demo')}
           <Icon name="arrow-right" width={16} height={16} />
         </Button>

@@ -1,20 +1,22 @@
 ---
 /**
- * AIChat — auto-cycling demo conversation between a user and "Aura".
+ * AIChat — auto-cycling demo conversation between a user and "Ely" (the bot).
+ * (the landing page's IA viz block).
  *
- * Header: avatar + status pill. Body: a `[data-ai-msgs]` container that the
- * inline `<script>` repaints every 2200ms by walking through a localized
- * sequence. Footer: AIInput.
+ * Implementation: every step in the sequence is rendered server-side as a
+ * sibling node inside the chat body, with `hidden` set by default. The
+ * client tick just removes the `hidden` attribute on more nodes — there is
+ * NO `innerHTML = …` mutation in the loop.
  *
- * The cycling logic:
- *   - `step` walks 0 → seq.length, then wraps back to 0 (showing nothing for
- *     a beat before restarting — that's intentional, gives the eye a rest).
- *   - When `document.hidden` (tab in background), we skip the tick instead of
- *     advancing — saves CPU and avoids weird state on tab return.
+ * Why: rewriting innerHTML every 2.2s caused a layout-shift cascade in dev
+ * (with DevTools `Disable cache` on) that made the surrounding header/footer
+ * `<img>` re-fetch on every tick. Pre-rendering eliminates the re-parse so
+ * the surrounding DOM stays stable.
  *
- * The chat copy lives in the i18n dictionary; we JSON-encode the sequence into
- * `data-chat-seq` so the script reads localized text from the DOM rather than
- * carrying a separate hard-coded array per locale.
+ * Cycle behavior:
+ *   - `step` walks 0 → seq.length, then wraps back to 0 (one extra empty
+ *     beat — visual rest before restart).
+ *   - When `document.hidden` we skip the tick instead of advancing.
  */
 import { Icon } from 'astro-icon/components';
 import AIInput from './AIInput.astro';
@@ -22,8 +24,8 @@ import { useTranslations } from '../../i18n/utils';
 
 const t = useTranslations(Astro.currentLocale);
 
-// Build the localized sequence inline. `kind: 'typing'` has no text.
 type Step = { kind: 'user' | 'bot' | 'typing'; text?: string };
+
 const seq: Step[] = [
   { kind: 'user', text: t('chat.user1') },
   { kind: 'typing' },
@@ -38,7 +40,7 @@ const seq: Step[] = [
   <div class="flex items-center gap-3 pb-3.5 border-b border-line mb-3.5">
     <div class="relative w-10 h-10 rounded-[12px] grid place-items-center text-white" style="background:linear-gradient(135deg, var(--color-sky), var(--color-teal));">
       <Icon name="sparkles" width={20} height={20} />
-      <!-- Live dot on the avatar — small status indicator. -->
+      <!-- Live dot on the avatar. -->
       <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-teal border-2 border-white"></span>
     </div>
     <div>
@@ -49,58 +51,73 @@ const seq: Step[] = [
     </div>
   </div>
 
-  <!-- The cycling target. data-chat-seq carries the localized sequence as JSON. -->
+  <!--
+    Pre-rendered messages with `hidden` by default. The client tick toggles
+    the `hidden` attribute. `data-step={i}` lets the script address each one
+    by its sequence index without rebuilding the list.
+  -->
   <div
     class="flex flex-col gap-2.5 min-h-45"
     data-ai-msgs
-    data-chat-seq={JSON.stringify(seq)}
-  ></div>
+    data-len={seq.length}
+  >
+    {seq.map((m, i) => {
+      if (m.kind === 'typing') {
+        return (
+          <div data-step={i} data-kind="typing" hidden class="self-start bg-paper px-3.5 py-2.5 rounded-[14px] rounded-bl-sm inline-flex gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-text-mute" style="animation:bounce-dot 1.2s infinite;"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-text-mute" style="animation:bounce-dot 1.2s infinite 0.15s;"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-text-mute" style="animation:bounce-dot 1.2s infinite 0.3s;"></span>
+          </div>
+        );
+      }
+      // user / bot bubble. Asymmetric corner gives the speech-tail.
+      const tone =
+        m.kind === 'user'
+          ? 'self-end bg-sky text-white rounded-br-[4px]'
+          : 'self-start bg-paper text-ink rounded-bl-[4px]';
+      return (
+        <div data-step={i} hidden class:list={['max-w-[80%] px-3.5 py-2.5 rounded-[14px] text-[13px] leading-[1.45]', tone]}>
+          {m.text}
+        </div>
+      );
+    })}
+  </div>
 
   <AIInput />
 </div>
 
 <script>
-  // Definitions — keep in sync with the .astro front matter.
-  type Step = { kind: 'user' | 'bot' | 'typing'; text?: string };
-
-  // Static markup for the typing-dots state. Inlined to avoid an extra mount.
-  const TYPING_HTML =
-    '<div class="self-start bg-paper px-3.5 py-2.5 rounded-[14px] rounded-bl-[4px] inline-flex gap-1">' +
-    '<span class="w-1.5 h-1.5 rounded-full bg-text-mute" style="animation:bounce-dot 1.2s infinite;"></span>' +
-    '<span class="w-1.5 h-1.5 rounded-full bg-text-mute" style="animation:bounce-dot 1.2s infinite 0.15s;"></span>' +
-    '<span class="w-1.5 h-1.5 rounded-full bg-text-mute" style="animation:bounce-dot 1.2s infinite 0.3s;"></span>' +
-    '</div>';
-
+  // For each AIChat on the page, manage reveal by flipping `hidden` on the
+  // pre-rendered nodes. No innerHTML rewriting → no parent layout cascade,
+  // and surrounding `<img>` tags stay put.
   document.querySelectorAll<HTMLElement>('[data-ai-msgs]').forEach((root) => {
-    const seq: Step[] = JSON.parse(root.dataset.chatSeq ?? '[]');
+    const total = parseInt(root.dataset.len ?? '0', 10);
+    const items = Array.from(root.querySelectorAll<HTMLElement>('[data-step]'));
     let step = 0;
 
-    const render = () => {
-      root.innerHTML = '';
-      seq.slice(0, step).forEach((m) => {
-        if (m.kind === 'typing') {
-          root.insertAdjacentHTML('beforeend', TYPING_HTML);
-        } else {
-          // Bubble. self-end + sky for user, self-start + paper for bot.
-          const tone =
-            m.kind === 'user'
-              ? 'self-end bg-sky text-white rounded-br-[4px]'
-              : 'self-start bg-paper text-ink rounded-bl-[4px]';
-          const el = document.createElement('div');
-          el.className = `max-w-[80%] px-3.5 py-2.5 rounded-[14px] text-[13px] leading-[1.45] ${tone}`;
-          el.textContent = m.text ?? '';
-          root.appendChild(el);
-        }
+    /** Show the first `step` items. Typing dots are special-cased: they stay
+     *  visible only while they're the *tip* of the reveal — i.e. the next
+     *  message hasn't landed yet. Once a later bubble appears, the dots hide
+     *  so they don't linger above the actual reply. */
+    const paint = () => {
+      items.forEach((el, i) => {
+        const isTyping = el.dataset.kind === 'typing';
+        const isTip = i === step - 1;
+        const visible = isTyping ? (i < step && isTip) : i < step;
+        if (visible) el.removeAttribute('hidden');
+        else el.setAttribute('hidden', '');
       });
     };
 
-    render();
+    paint();
+
     setInterval(() => {
       // Tab hidden → skip the frame. State doesn't advance; resumes when visible.
       if (document.hidden) return;
       // Walk 0..N, then back to 0 (one extra step shows nothing — visual rest).
-      step = (step + 1) % (seq.length + 1);
-      render();
+      step = (step + 1) % (total + 1);
+      paint();
     }, 2200);
   });
 </script>

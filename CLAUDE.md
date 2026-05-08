@@ -7,7 +7,8 @@ Coverage doc for future agents working on this repo.
 The marketing site for **SoftWork**, a workplace climate / wellbeing platform built by the **Elysium** startup. Two static pages, each available in Spanish (default) and English:
 
 - **Landing** — `/` (es), `/en/` (en) — hero + benefits + CTA.
-- **How it works** — `/how-it-works` (es), `/en/how-it-works` (en) — three product flows in a stepped/animated layout: anonymous report, AI assistant (Aura), HR dashboard.
+- **How it works** — `/how-it-works` (es), `/en/how-it-works` (en) — three product flows in a stepped/animated layout: anonymous report, AI assistant (Ely), HR dashboard.
+- **Request demo** — `/request-demo` (es), `/en/request-demo` (en) — placeholder shown when users click "Request Demo". Communicates that the mobile apps are still in development; offers a "talk to sales" mailto and a back-to-home secondary.
 
 Presentational only — no backend, no real form submission, no analytics wiring.
 
@@ -37,9 +38,11 @@ src/
 ├─ pages/
 │  ├─ index.astro             ← / (es, default locale) — landing
 │  ├─ how-it-works.astro      ← /how-it-works (es) — three product flows
+│  ├─ request-demo.astro      ← /request-demo (es) — "mobile apps in development" placeholder
 │  └─ en/
 │     ├─ index.astro          ← /en/  (English landing)
-│     └─ how-it-works.astro   ← /en/how-it-works  (English how-it-works)
+│     ├─ how-it-works.astro   ← /en/how-it-works  (English how-it-works)
+│     └─ request-demo.astro   ← /en/request-demo  (English placeholder)
 ├─ layouts/BaseLayout.astro  ← <html lang=…>, <head>, fonts, slot
 ├─ styles/global.css         ← Tailwind entrypoint + @theme + keyframes + .shell / .t-* helpers
 ├─ i18n/

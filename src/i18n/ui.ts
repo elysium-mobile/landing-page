@@ -362,6 +362,45 @@ export const ui = {
       'Una demo de 20 minutos te muestra los 3 flujos con datos reales de empresas como la tuya. Sin compromiso, sin instalar nada.',
     'cf.cta.demo': 'Solicitar demo',
     'cf.cta.back': 'Volver al inicio',
+
+    // ─────────────────────────────────────────────────────────────────────────
+    //  Request-demo placeholder page (`demo.*`)
+    //
+    //  Shown when users click any "Solicitar demo" CTA — the production demo
+    //  flow doesn't exist yet, so this page sets the right expectation and
+    //  keeps the visit warm with secondary contact options.
+    // ─────────────────────────────────────────────────────────────────────────
+    'demo.meta.title': 'Solicitar demo — apps móviles en desarrollo',
+    'demo.meta.description':
+      'Las apps móviles de SoftWork están en construcción. Mientras tanto, hablemos.',
+
+    'demo.eyebrow': 'Próximamente · en construcción',
+    'demo.title.html':
+      'Las apps móviles están <em class="gradient-em">en construcción</em>.',
+    'demo.body':
+      'Estamos puliendo iOS, Android y el panel para RRHH. La demo agendada llega en cuanto los tres lados estén listos para que la veas en vivo, no en pantallas de marketing.',
+    'demo.cta.sales': 'Hablar con ventas',
+    'demo.cta.back': 'Volver al inicio',
+
+    'demo.list.title': 'Lo que estamos puliendo',
+    'demo.list.1.lead': 'App empleado · iOS y Android',
+    'demo.list.1.rest':
+      ' — reportes anónimos, foros y check-ins en Android y Jetpack Compose.',
+    'demo.list.2.lead': 'App RRHH · pulso en el bolsillo',
+    'demo.list.2.rest':
+      ' — KPIs, alertas con contexto y acciones delegadas, en Flutter.',
+    'demo.list.3.lead': 'Ely · IA contenedora',
+    'demo.list.3.rest':
+      ' — escucha activa privada por diseño, calibrada con psicólogos organizacionales.',
+
+    // Phone placeholder
+    'demo.phone.tag': 'BUILD · alpha',
+    'demo.phone.title': 'Próximamente',
+    'demo.phone.body':
+      'Estamos cocinando algo bueno. Te avisamos cuando esté listo.',
+    'demo.phone.progress.label': 'Progreso',
+    'demo.phone.progress.value': '78%',
+    'demo.phone.eta': 'Lanzamiento · Q3',
   },
   en: {
     'header.nav.home': 'Home',
@@ -676,6 +715,37 @@ export const ui = {
       'A 20-minute demo walks you through the 3 flows with real data from companies like yours. No commitment, no install.',
     'cf.cta.demo': 'Request demo',
     'cf.cta.back': 'Back to home',
+
+    'demo.meta.title': 'Request a demo — mobile apps in development',
+    'demo.meta.description':
+      "SoftWork's mobile apps are still under construction. In the meantime, let's talk.",
+
+    'demo.eyebrow': 'Coming soon · under construction',
+    'demo.title.html':
+      'The mobile apps are <em class="gradient-em">still in the workshop</em>.',
+    'demo.body':
+      "We're polishing iOS, Android, and the HR panel. Demo bookings open the moment all three sides are ready to be shown live — not in marketing mockups.",
+    'demo.cta.sales': 'Talk to sales',
+    'demo.cta.back': 'Back to home',
+
+    'demo.list.title': "What we're polishing",
+    'demo.list.1.lead': 'Employee app · iOS and Android',
+    'demo.list.1.rest':
+      ' — anonymous reports, forums, and check-ins in Android and Jetpack Compose.',
+    'demo.list.2.lead': 'HR app · pulse in your pocket',
+    'demo.list.2.rest':
+      ' — KPIs, alerts with context, and delegated actions, in Flutter.',
+    'demo.list.3.lead': 'Ely · containing AI',
+    'demo.list.3.rest':
+      ' — privacy-by-design active listening, calibrated with organisational psychologists.',
+
+    'demo.phone.tag': 'BUILD · alpha',
+    'demo.phone.title': 'Coming soon',
+    'demo.phone.body':
+      "We're cooking something good. We'll let you know when it's ready.",
+    'demo.phone.progress.label': 'Progress',
+    'demo.phone.progress.value': '78%',
+    'demo.phone.eta': 'Release · Q3',
   },
 } as const;
 

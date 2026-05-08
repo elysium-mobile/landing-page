@@ -37,7 +37,7 @@ const lp = (path: string) => localizedPath(Astro.currentLocale, path);
     <div class="flex items-center gap-3">
       <LanguageSwitcher />
       <Button href="#" variant="ghost" class="hidden sm:inline-flex">{t('header.cta.signin')}</Button>
-      <Button href="#demo" variant="primary">{t('header.cta.demo')}</Button>
+      <Button href={lp('/request-demo')} variant="primary">{t('header.cta.demo')}</Button>
     </div>
   </div>
 </header>

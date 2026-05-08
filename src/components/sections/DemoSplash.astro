@@ -1,0 +1,94 @@
+---
+/**
+ * DemoSplash — the single hero-like section that fills the request-demo page.
+ *
+ * Layout mirrors the landing's Hero: 2-column on lg+, copy on the left, phone
+ * placeholder on the right. On smaller widths the phone stacks below the
+ * copy, same as the landing.
+ *
+ * Atoms reused (instead of new ones):
+ *   - HeroEyebrow (with the `eye` icon — different connotation than landing's
+ *     "live heart": "we see what's coming").
+ *   - Button (primary on-brand + ghost).
+ *   - FeatureList + FeatureItem from the landing's value blocks.
+ *   - PhoneFrame via DemoPlaceholderPhone.
+ */
+import HeroEyebrow from '../ui/HeroEyebrow.astro';
+import Button from '../ui/Button.astro';
+import FeatureList from './FeatureList.astro';
+import FeatureItem from './FeatureItem.astro';
+import DemoPlaceholderPhone from '../phone/DemoPlaceholderPhone.astro';
+import { Icon } from 'astro-icon/components';
+import { useTranslations, localizedPath } from '../../i18n/utils';
+
+const t = useTranslations(Astro.currentLocale);
+const lp = (p: string) => localizedPath(Astro.currentLocale, p);
+---
+
+<section class="demo-splash relative pt-16 pb-20 overflow-hidden">
+  <!-- Same halo treatment as the landing Hero so the page feels native. -->
+  <div class="demo-glow-a"></div>
+  <div class="demo-glow-b"></div>
+
+  <div class="shell relative z-10 grid items-center gap-12 lg:gap-16 lg:grid-cols-[1.1fr_1fr] grid-cols-1">
+    <!-- Copy column. -->
+    <div>
+      <div class="fade-up">
+        <HeroEyebrow icon="eye">{t('demo.eyebrow')}</HeroEyebrow>
+      </div>
+      <h1
+        class="t-display fade-up delay-1 m-0 mb-6"
+        set:html={t('demo.title.html')}
+      ></h1>
+      <p class="text-[18px] leading-[1.55] text-text-soft max-w-130 m-0 mb-8 fade-up delay-2">
+        {t('demo.body')}
+      </p>
+
+      <div class="flex flex-wrap gap-3 items-center mb-10 fade-up delay-3">
+        <Button href="mailto:hola@elysium.team" variant="primary" size="lg">
+          {t('demo.cta.sales')}
+          <Icon name="arrow-right" width={16} height={16} />
+        </Button>
+        <Button href={lp('/')} variant="ghost" size="lg">{t('demo.cta.back')}</Button>
+      </div>
+
+      <!-- "What we're polishing" — small section reusing the landing's bullet style. -->
+      <div class="fade-up delay-4">
+        <h2 class="t-section-eyebrow block mb-4">{t('demo.list.title')}</h2>
+        <FeatureList>
+          <FeatureItem theme="employee" lead={t('demo.list.1.lead')}>{t('demo.list.1.rest')}</FeatureItem>
+          <FeatureItem theme="hr" lead={t('demo.list.2.lead')}>{t('demo.list.2.rest')}</FeatureItem>
+          <FeatureItem theme="ai" lead={t('demo.list.3.lead')}>{t('demo.list.3.rest')}</FeatureItem>
+        </FeatureList>
+      </div>
+    </div>
+
+    <!-- Phone column. -->
+    <div class="flex justify-center fade-up delay-2">
+      <DemoPlaceholderPhone />
+    </div>
+  </div>
+</section>
+
+<style>
+  .demo-glow-a {
+    position: absolute;
+    top: -180px;
+    right: -200px;
+    width: 720px;
+    height: 720px;
+    background: radial-gradient(circle at center, rgba(77, 168, 218, 0.18) 0%, rgba(77, 168, 218, 0) 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .demo-glow-b {
+    position: absolute;
+    bottom: -260px;
+    left: -180px;
+    width: 620px;
+    height: 620px;
+    background: radial-gradient(circle at center, rgba(165, 227, 216, 0.34) 0%, rgba(165, 227, 216, 0) 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+</style>
