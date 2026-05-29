@@ -23,6 +23,10 @@ export type Lang = keyof typeof languages;
 
 export const ui = {
   es: {
+    // ── Name Startup --------------------------------------------------------
+    'startup.name': 'Elysium',
+    'startup.product': 'SoftWork',
+
     // ── Header ──────────────────────────────────────────────────────────────
     'header.nav.home': 'Inicio',
     'header.nav.benefits': 'Beneficios',
@@ -39,7 +43,6 @@ export const ui = {
       'SoftWork es el puente seguro entre tu equipo y Recursos Humanos. Reportes anónimos, foros internos, soporte con IA 24/7 y dashboards analíticos para decisiones que importan.',
     'hero.cta.demo': 'Solicitar Demo',
     'hero.cta.how': 'Ver cómo funciona',
-    'hero.trust.label': 'Una iniciativa de Elysium',
     'hero.trust.brand': 'Elysium · Startup',
 
     // ── Floating cards (around the hero phone) ──────────────────────────────
@@ -190,7 +193,6 @@ export const ui = {
     'footer.legal.dpa': 'Acuerdo de procesamiento',
     'footer.legal.anonymity': 'Política de anonimato',
     'footer.copy': '© 2026 SoftWork. Todos los derechos reservados.',
-    'footer.by.prefix': 'Construido con cuidado por',
 
     // ── <head> meta ─────────────────────────────────────────────────────────
     'meta.title': 'SoftWork — Clima y bienestar laboral, escuchado de verdad.',
@@ -403,6 +405,10 @@ export const ui = {
     'demo.phone.eta': 'Lanzamiento · Q3',
   },
   en: {
+    // ── Name Startup --------------------------------------------------------
+    'startup.name': 'Elysium',
+    'startup.product': 'SoftWork',
+
     'header.nav.home': 'Home',
     'header.nav.benefits': 'Benefits',
     'header.nav.how': 'How it works',
@@ -416,7 +422,6 @@ export const ui = {
       'SoftWork is the safe bridge between your team and HR. Anonymous reports, internal forums, 24/7 AI support, and analytical dashboards for decisions that matter.',
     'hero.cta.demo': 'Request Demo',
     'hero.cta.how': 'See how it works',
-    'hero.trust.label': 'An Elysium initiative',
     'hero.trust.brand': 'Elysium · Startup',
 
     'float.anon.label': 'Report sent',
@@ -553,7 +558,6 @@ export const ui = {
     'footer.legal.dpa': 'Data processing agreement',
     'footer.legal.anonymity': 'Anonymity policy',
     'footer.copy': '© 2026 SoftWork. All rights reserved.',
-    'footer.by.prefix': 'Crafted with care by',
 
     'meta.title': 'SoftWork — Workplace climate and wellbeing, truly heard.',
     'meta.description':

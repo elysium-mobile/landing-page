@@ -6,6 +6,7 @@
  * the BrandMark itself stays the same gradient in both contexts.
  */
 import BrandMark from './BrandMark.astro';
+import { useTranslations } from "../../i18n/utils";
 
 interface Props {
   /** Pre-localized home URL. */
@@ -16,9 +17,10 @@ interface Props {
 
 const { href = '/', invert = false } = Astro.props;
 const wordmark = invert ? 'text-white' : 'text-navy';
+const t = useTranslations(Astro.currentLocale);
 ---
 
 <a href={href} class={`flex items-center gap-2.5 font-bold text-[18px] tracking-[-0.01em] ${wordmark}`}>
   <BrandMark />
-  <span>SoftWork</span>
+  <span>{t('startup.product')}</span>
 </a>

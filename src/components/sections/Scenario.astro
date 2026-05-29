@@ -82,7 +82,7 @@ const stageBg: Record<Theme, string> = {
         vertical real estate. We let the phone determine the column height
         (~620–640px from PhoneFrame) on small viewports.
       -->
-      <div class="lg:[direction:ltr] relative flex items-center justify-center min-h-[600px] sm:min-h-[620px] lg:min-h-[640px]">
+      <div class="lg:[direction:ltr] relative flex items-center justify-center min-h-150 sm:min-h-155 lg:min-h-160">
         <!-- Stage glow sits behind the phone; -inset-8 gives it slight overflow. -->
         <div class="absolute inset-0 -m-6 rounded-4xl z-0" style={`background:${stageBg[theme]};`}></div>
         <div class="relative z-10">

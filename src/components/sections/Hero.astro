@@ -10,12 +10,11 @@
  * Entrance animation: each block uses `.fade-up` with a `delay-N` that
  * staggers them 80ms apart for a single coherent reveal on first paint.
  */
-import HeroEyebrow from '../ui/HeroEyebrow.astro';
-import HeroVisual from './HeroVisual.astro';
-import HeroTrust from './HeroTrust.astro';
-import Button from '../ui/Button.astro';
-import { Icon } from 'astro-icon/components';
-import { useTranslations, localizedPath } from '../../i18n/utils';
+import HeroEyebrow from "../ui/HeroEyebrow.astro";
+import HeroVisual from "./HeroVisual.astro";
+import Button from "../ui/Button.astro";
+import { Icon } from "astro-icon/components";
+import { useTranslations, localizedPath } from "../../i18n/utils";
 
 const t = useTranslations(Astro.currentLocale);
 const lp = (p: string) => localizedPath(Astro.currentLocale, p);
@@ -28,7 +27,9 @@ const lp = (p: string) => localizedPath(Astro.currentLocale, p);
   vertical scrollbar inside the section. `overflow-x-clip` is special-cased
   and leaves the y-axis genuinely visible.
 -->
-<section class="hero relative pt-10 pb-10 sm:pt-14 sm:pb-12 lg:pt-16 lg:pb-12 overflow-x-clip">
+<section
+  class="hero relative pt-10 pb-10 sm:pt-14 sm:pb-12 lg:pt-16 lg:pb-12 overflow-x-clip"
+>
   <!-- Two giant soft halos: top-right sky, bottom-left mint. Pure decoration. -->
   <div class="hero-glow-a"></div>
   <div class="hero-glow-b"></div>
@@ -38,27 +39,48 @@ const lp = (p: string) => localizedPath(Astro.currentLocale, p);
     a 1.05fr / 1fr grid with copy on the left. Text-center on mobile keeps
     the headline + CTAs balanced when there's no visual to anchor against.
   -->
-  <div class="shell relative z-10 grid items-center gap-10 lg:grid-cols-[1.05fr_1fr] grid-cols-1">
+  <div
+    class="shell relative z-10 grid items-center gap-10 lg:grid-cols-[1.05fr_1fr] grid-cols-1"
+  >
     <div class="text-center lg:text-left">
       <div class="fade-up flex justify-center lg:justify-start">
-        <HeroEyebrow>{t('hero.eyebrow')}</HeroEyebrow>
+        <HeroEyebrow>{t("hero.eyebrow")}</HeroEyebrow>
       </div>
       <!-- Title HTML contains <em class="gradient-em"> markers for the gradient text. -->
       <h1
         class="t-display fade-up delay-1 m-0 mb-6"
-        set:html={t('hero.title.html')}
-      ></h1>
-      <p class="text-[16px] sm:text-[18px] leading-[1.55] text-text-soft max-w-130 mx-auto lg:mx-0 m-0 mb-8 fade-up delay-2">
-        {t('hero.subtitle')}
+        set:html={t("hero.title.html")}
+      />
+      <p
+        class="text-[16px] sm:text-[18px] leading-[1.55] text-text-soft max-w-130 mx-auto lg:mx-0 m-0 mb-8 fade-up delay-2"
+      >
+        {t("hero.subtitle")}
       </p>
-      <div class="flex flex-wrap gap-3 items-center justify-center lg:justify-start fade-up delay-3">
-        <Button href={lp('/request-demo')} variant="primary" size="lg">
-          {t('hero.cta.demo')}
+      <div
+        class="flex flex-wrap gap-3 items-center justify-center lg:justify-start fade-up delay-3"
+      >
+        <Button href={lp("/request-demo")} variant="primary" size="lg">
+          {t("hero.cta.demo")}
           <Icon name="arrow-right" width={16} height={16} />
         </Button>
-        <Button href={lp('/how-it-works')} variant="ghost" size="lg">{t('hero.cta.how')}</Button>
+        <Button href={lp("/how-it-works")} variant="ghost" size="lg"
+          >{t("hero.cta.how")}</Button
+        >
       </div>
-      <HeroTrust />
+      <div class="mt-9 flex items-center gap-4 flex-wrap fade-up delay-4">
+
+        <div class="flex gap-5.5 items-center flex-wrap">
+          <span
+            class="inline-flex items-center gap-2 font-bold text-text-mute text-[14px] tracking-[0.04em] opacity-70 hover:opacity-100 hover:text-navy transition-all duration-200"
+          >
+            <span
+              class="inline-block w-4.5 h-4.5 rounded-md"
+              style="background:linear-gradient(135deg, var(--color-navy), var(--color-teal));"
+            ></span>
+            {t("hero.trust.brand")}
+          </span>
+        </div>
+      </div>
     </div>
 
     <HeroVisual />
@@ -73,7 +95,11 @@ const lp = (p: string) => localizedPath(Astro.currentLocale, p);
     right: -200px;
     width: 720px;
     height: 720px;
-    background: radial-gradient(circle at center, rgba(77, 168, 218, 0.18) 0%, rgba(77, 168, 218, 0) 60%);
+    background: radial-gradient(
+      circle at center,
+      rgba(77, 168, 218, 0.18) 0%,
+      rgba(77, 168, 218, 0) 60%
+    );
     pointer-events: none;
     z-index: 0;
   }
@@ -83,7 +109,11 @@ const lp = (p: string) => localizedPath(Astro.currentLocale, p);
     left: -180px;
     width: 620px;
     height: 620px;
-    background: radial-gradient(circle at center, rgba(165, 227, 216, 0.34) 0%, rgba(165, 227, 216, 0) 60%);
+    background: radial-gradient(
+      circle at center,
+      rgba(165, 227, 216, 0.34) 0%,
+      rgba(165, 227, 216, 0) 60%
+    );
     pointer-events: none;
     z-index: 0;
   }
