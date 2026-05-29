@@ -192,7 +192,7 @@ export const ui = {
     'footer.legal.security': 'Seguridad',
     'footer.legal.dpa': 'Acuerdo de procesamiento',
     'footer.legal.anonymity': 'Política de anonimato',
-    'footer.copy': '© 2026 SoftWork. Todos los derechos reservados.',
+    'footer.copy': '© 2026 Elysium. Todos los derechos reservados.',
 
     // ── <head> meta ─────────────────────────────────────────────────────────
     'meta.title': 'SoftWork — Clima y bienestar laboral, escuchado de verdad.',
@@ -557,7 +557,7 @@ export const ui = {
     'footer.legal.security': 'Security',
     'footer.legal.dpa': 'Data processing agreement',
     'footer.legal.anonymity': 'Anonymity policy',
-    'footer.copy': '© 2026 SoftWork. All rights reserved.',
+    'footer.copy': '© 2026 Elysium. All rights reserved.',
 
     'meta.title': 'SoftWork — Workplace climate and wellbeing, truly heard.',
     'meta.description':
