@@ -403,6 +403,81 @@ export const ui = {
     'demo.phone.progress.label': 'Progreso',
     'demo.phone.progress.value': '78%',
     'demo.phone.eta': 'Lanzamiento · Q3',
+
+    // ─────────────────────────────────────────────────────────────────────────
+    //  Media & Community page (`media.*`)
+    //
+    //  Video showcase: three product videos (About the Product, App Validation,
+    //  About the Team) plus the Elysium team roster. Videos are presentational
+    //  placeholders — see VideoCard.astro.
+    // ─────────────────────────────────────────────────────────────────────────
+    'header.nav.media': 'Media & Comunidad',
+
+    'media.meta.title': 'Media & Comunidad — SoftWork en acción',
+    'media.meta.description':
+      'Recorridos del producto, validación de la app y el equipo que construye SoftWork.',
+
+    // Hero
+    'media.hero.eyebrow': 'Media & Comunidad',
+    'media.hero.title.html':
+      'Ve SoftWork en acción — <em class="gradient-em">y a quienes lo construyen</em>.',
+    'media.hero.body':
+      'Recorridos del producto, la validación detrás de la app y el equipo que da vida a SoftWork. Todo en un solo lugar.',
+
+    // Section 1 — About the Product
+    'media.product.eyebrow': 'Recorrido del producto',
+    'media.product.title': 'Sobre el producto',
+    'media.product.body':
+      'Descubre cómo SoftWork convierte señales del clima laboral en decisiones reales — del reporte anónimo al dashboard de RRHH.',
+    'media.product.video': 'SoftWork — recorrido del producto',
+    'media.product.list.title': 'Cómo funciona SoftWork',
+    'media.product.f1.lead': 'Reporte anónimo:',
+    'media.product.f1.rest': ' cómo protegemos la identidad de quien levanta la voz.',
+    'media.product.f2.lead': 'Asistente Ely:',
+    'media.product.f2.rest': ' escucha activa 24/7, privada por diseño.',
+    'media.product.f3.lead': 'Dashboard RRHH:',
+    'media.product.f3.rest': ' pulso de clima, alertas con contexto y acciones.',
+    'media.product.f4.lead': 'Privacidad por diseño:',
+    'media.product.f4.rest': ' cifrado de extremo a extremo, sin metadatos vinculantes.',
+
+    // Section 2 — App Validation
+    'media.validation.eyebrow': 'Validación',
+    'media.validation.title': 'Validación de la app',
+    'media.validation.body':
+      'No lo decimos solo nosotros. Así probamos SoftWork con equipos reales antes de escalar — qué medimos y qué aprendimos.',
+    'media.validation.video': 'SoftWork — validación con equipos piloto',
+    'media.validation.list.title': 'Qué validamos',
+    'media.validation.f1.lead': 'Pilotos reales:',
+    'media.validation.f1.rest': ' equipos usando SoftWork en su día a día, no en un laboratorio.',
+    'media.validation.f2.lead': 'Señal de retención:',
+    'media.validation.f2.rest': ' +38% en retención de talento en los primeros ciclos.',
+    'media.validation.f3.lead': 'Feedback continuo:',
+    'media.validation.f3.rest': ' iteramos con cada reporte, foro y conversación con Ely.',
+    'media.validation.f4.lead': 'Anonimato verificable:',
+    'media.validation.f4.rest': ' auditamos que ninguna identidad pueda reconstruirse.',
+
+    // Section 3 — About the Team
+    'media.team.eyebrow': 'Detrás de SoftWork',
+    'media.team.title': 'Nuestro equipo',
+    'media.team.body':
+      'Conoce a las personas que construyen SoftWork y reinventan cómo las organizaciones escuchan a su gente.',
+    'media.team.table.title': 'Miembros del equipo',
+    'media.team.col.name': 'Nombre',
+    'media.team.col.role': 'Rol',
+    'media.team.col.desc': 'Descripción',
+    'media.team.m1.role': 'Desarrollador Frontend',
+    'media.team.m1.desc': 'Lidera el desarrollo Frontend.',
+    'media.team.m2.role': 'Desarrollador Frontend',
+    'media.team.m2.desc': 'Responsable de diseño y desarrollo front-end.',
+    'media.team.m3.role': 'Desarrollador Frontend',
+    'media.team.m3.desc': 'Responsable de diseño y desarrollo front-end.',
+    'media.team.m4.role': 'Desarrollador Backend',
+    'media.team.m4.desc': 'Responsable de estructura de datos y APIs.',
+    'media.team.m5.role': 'Desarrollador Frontend y DevOps',
+    'media.team.m5.desc':
+      'Responsable de la arquitectura full-stack y despliegue de la plataforma.',
+    'media.team.meet': 'Conoce al equipo',
+    'media.team.video': 'Video del equipo — SoftWork',
   },
   en: {
     // ── Name Startup --------------------------------------------------------
@@ -750,6 +825,71 @@ export const ui = {
     'demo.phone.progress.label': 'Progress',
     'demo.phone.progress.value': '78%',
     'demo.phone.eta': 'Release · Q3',
+
+    // ── Media & Community page (`media.*`) ───────────────────────────────────
+    'header.nav.media': 'Media & Community',
+
+    'media.meta.title': 'Media & Community — SoftWork in action',
+    'media.meta.description':
+      'Product walk-throughs, app validation, and the team building SoftWork.',
+
+    'media.hero.eyebrow': 'Media & Community',
+    'media.hero.title.html':
+      'See SoftWork in action — <em class="gradient-em">and the people behind it</em>.',
+    'media.hero.body':
+      'Product walk-throughs, the validation behind the app, and the team bringing SoftWork to life. All in one place.',
+
+    'media.product.eyebrow': 'Product tour',
+    'media.product.title': 'About the Product',
+    'media.product.body':
+      'Discover how SoftWork turns workplace-climate signals into real decisions — from the anonymous report to the HR dashboard.',
+    'media.product.video': 'SoftWork — product walk-through',
+    'media.product.list.title': 'How SoftWork works',
+    'media.product.f1.lead': 'Anonymous report:',
+    'media.product.f1.rest': ' how we protect the identity of whoever speaks up.',
+    'media.product.f2.lead': 'Ely assistant:',
+    'media.product.f2.rest': ' 24/7 active listening, private by design.',
+    'media.product.f3.lead': 'HR dashboard:',
+    'media.product.f3.rest': ' climate pulse, alerts with context, and actions.',
+    'media.product.f4.lead': 'Privacy by design:',
+    'media.product.f4.rest': ' end-to-end encryption, no linking metadata.',
+
+    'media.validation.eyebrow': 'Validation',
+    'media.validation.title': 'App Validation',
+    'media.validation.body':
+      "Don't just take our word for it. Here's how we tested SoftWork with real teams before scaling — what we measured and what we learned.",
+    'media.validation.video': 'SoftWork — validation with pilot teams',
+    'media.validation.list.title': 'What we validated',
+    'media.validation.f1.lead': 'Real pilots:',
+    'media.validation.f1.rest': ' teams using SoftWork day to day, not in a lab.',
+    'media.validation.f2.lead': 'Retention signal:',
+    'media.validation.f2.rest': ' +38% talent retention in the first cycles.',
+    'media.validation.f3.lead': 'Continuous feedback:',
+    'media.validation.f3.rest': ' we iterate with every report, forum, and Ely chat.',
+    'media.validation.f4.lead': 'Verifiable anonymity:',
+    'media.validation.f4.rest': ' we audit that no identity can be reconstructed.',
+
+    'media.team.eyebrow': 'Behind SoftWork',
+    'media.team.title': 'Our Team',
+    'media.team.body':
+      'Meet the people building SoftWork and reinventing how organisations listen to their people.',
+    'media.team.table.title': 'Team members',
+    'media.team.col.name': 'Name',
+    'media.team.col.role': 'Role',
+    'media.team.col.desc': 'Description',
+    'media.team.m1.role': 'Frontend Developer',
+    'media.team.m1.desc': 'Leads frontend development.',
+    'media.team.m2.role': 'Frontend Developer',
+    'media.team.m2.desc': 'Responsible for design and front-end development.',
+    'media.team.m3.role': 'Frontend Developer',
+    'media.team.m3.desc': 'Responsible for design and front-end development.',
+    'media.team.m4.role': 'Backend Developer',
+    'media.team.m4.desc': 'Responsible for structuring and maintaining backend services.',
+    'media.team.m5.role': 'Frontend and DevOps Developer',
+    'media.team.m5.desc':
+      'Responsible for end-to-end full-stack architecture, performance optimization, and modular UI engineering.',
+    'media.team.meet': 'Meet Our Team',
+    'media.team.video': 'Video About the Team — SoftWork',
   },
 } as const;
 

@@ -1,0 +1,141 @@
+---
+/**
+ * VideoCard — branded video poster that lazy-loads a YouTube embed on click.
+ *
+ * Uses a "facade" pattern: the dark, on-brand 16:9 poster (play chip + title +
+ * centre play button + watermark) renders server-side, and the real YouTube
+ * <iframe> is only injected when the user clicks — no third-party script or
+ * iframe loads until then, which keeps the page fast and privacy-friendly
+ * (we use youtube-nocookie.com).
+ *
+ * `videoId` accepts either the bare 11-char ID or a full YouTube URL
+ * (watch?v=…, youtu.be/…, or /embed/…) — it's normalised below. When it's
+ * empty the card stays an inert placeholder (no embed, click does nothing).
+ */
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  /** Title shown top-left and used as the button's accessible label. */
+  title: string;
+  /** YouTube video ID or full URL. Empty → inert placeholder. */
+  videoId?: string;
+  /** Extra utility classes on the outer frame. */
+  class?: string;
+}
+
+const { title, videoId = '', class: extra = '' } = Astro.props;
+
+/** Normalise a YouTube URL or bare ID down to the 11-char video ID. */
+function toYouTubeId(input: string): string {
+  if (!input) return '';
+  const m = input.match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/);
+  return m ? m[1] : input.trim();
+}
+
+const id = toYouTubeId(videoId);
+const hasVideo = id.length > 0;
+---
+
+<div
+  class={`group relative w-full aspect-video rounded-2xl sm:rounded-3xl overflow-hidden ${extra}`.trim()}
+  style="background:linear-gradient(160deg, #12233b 0%, #0d1a2e 60%, #0a1522 100%); box-shadow:var(--shadow-card-lg);"
+  data-video-card
+  data-video-id={hasVideo ? id : undefined}
+  data-video-title={title}
+>
+  <!-- Soft teal glow up top for depth (shows through on the empty placeholder). -->
+  <div
+    class="pointer-events-none absolute -top-1/3 left-1/2 -translate-x-1/2 w-2/3 aspect-square rounded-full"
+    style="background:radial-gradient(circle, rgba(25,164,161,0.22), transparent 65%);"
+  ></div>
+
+  {hasVideo && (
+    <>
+      <!--
+        Real YouTube thumbnail as the poster. maxresdefault is the sharpest but
+        isn't generated for every video — if it 404s the script below swaps to
+        hqdefault (always available). object-cover crops it cleanly to 16:9.
+      -->
+      <img
+        src={`https://i.ytimg.com/vi/${id}/maxresdefault.jpg`}
+        alt=""
+        aria-hidden="true"
+        loading="lazy"
+        decoding="async"
+        data-video-thumb
+        data-fallback={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`}
+        class="absolute inset-0 w-full h-full object-cover"
+      />
+      <!-- Readability scrim so the white title + watermark stay legible. -->
+      <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/45 via-black/10 to-black/45"></div>
+    </>
+  )}
+
+  <!-- Top-left: small play chip + video title. -->
+  <div class="absolute top-0 left-0 right-0 p-4 sm:p-5 flex items-center gap-2.5 z-10">
+    <span
+      class="grid place-items-center w-6 h-6 rounded-full shrink-0"
+      style="background:linear-gradient(135deg, var(--color-sky), var(--color-teal));"
+    >
+      <Icon name="play" width={11} height={11} class="text-white translate-x-px" />
+    </span>
+    <span class="text-white font-semibold text-[13px] sm:text-[14px] truncate">{title}</span>
+  </div>
+
+  <!-- Centre play button. Disabled cursor when there's no video wired. -->
+  <button
+    type="button"
+    aria-label={title}
+    data-video-play
+    class:list={[
+      'absolute inset-0 grid place-items-center',
+      hasVideo ? 'cursor-pointer' : 'cursor-default',
+    ]}
+  >
+    <span
+      class="grid place-items-center w-14 h-14 sm:w-16 sm:h-16 rounded-full transition-transform duration-200 group-hover:scale-105"
+      style="background:linear-gradient(135deg, var(--color-sky), var(--color-teal)); box-shadow:0 10px 30px rgba(25,164,161,0.4);"
+    >
+      <Icon name="play" width={22} height={22} class="text-white translate-x-0.5" />
+    </span>
+  </button>
+
+  <!-- Bottom-right watermark. -->
+  <div class="absolute bottom-0 right-0 p-3.5 sm:p-4 flex items-center gap-1.5 text-white/45 text-[10px] font-semibold tracking-widest uppercase z-10">
+    <Icon name="globe" width={12} height={12} /> SoftWork
+  </div>
+</div>
+
+<script>
+  // If maxresdefault.jpg 404s (not generated for this video), fall back to
+  // hqdefault.jpg, which YouTube always provides.
+  document.querySelectorAll<HTMLImageElement>('[data-video-thumb]').forEach((img) => {
+    img.addEventListener('error', () => {
+      const fb = img.dataset.fallback;
+      if (fb && !img.src.endsWith('hqdefault.jpg')) img.src = fb;
+    });
+  });
+
+  // Click-to-load facade. For every card that has a video id, swap in the
+  // YouTube iframe on first click. Cards without an id stay inert placeholders.
+  document.querySelectorAll<HTMLElement>('[data-video-card]').forEach((card) => {
+    const id = card.dataset.videoId;
+    if (!id) return;
+
+    const play = card.querySelector<HTMLButtonElement>('[data-video-play]');
+    play?.addEventListener('click', () => {
+      if (card.dataset.playing === 'true') return; // already embedded
+      card.dataset.playing = 'true';
+
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;
+      iframe.title = card.dataset.videoTitle ?? 'Video';
+      iframe.allow =
+        'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      iframe.allowFullscreen = true;
+      // z-20 so the iframe paints above the z-10 poster chrome and captures clicks.
+      iframe.className = 'absolute inset-0 w-full h-full border-0 z-20';
+      card.appendChild(iframe);
+    });
+  });
+</script>

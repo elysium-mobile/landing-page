@@ -1,0 +1,65 @@
+---
+/**
+ * VideoShowcase — a titled section with a video on one side and a bullet list
+ * on the other. Reused for both "About the Product" and "App Validation".
+ *
+ * Structure: centred eyebrow + title + body lead, then a 2-column split
+ * (VideoCard ↔ FeatureList). `flip` swaps the column order on lg+ via the
+ * same direction:rtl trick used across the site.
+ *
+ * The bullets are provided by the caller through the default slot (a set of
+ * <FeatureItem> nodes), which this component drops into a <FeatureList>.
+ */
+import VideoCard from '../ui/VideoCard.astro';
+import FeatureList from './FeatureList.astro';
+
+interface Props {
+  /** Anchor id for in-page links. */
+  id?: string;
+  /** Small uppercase tag. */
+  eyebrow: string;
+  /** Section heading. */
+  title: string;
+  /** Lead paragraph. */
+  body: string;
+  /** Title shown inside the VideoCard. */
+  videoTitle: string;
+  /** YouTube video ID or URL for the VideoCard. Empty → placeholder. */
+  videoId?: string;
+  /** Heading above the bullet list. */
+  listTitle: string;
+  /** Reverse the video/list order on lg+. */
+  flip?: boolean;
+}
+
+const { id, eyebrow, title, body, videoTitle, videoId = '', listTitle, flip = false } = Astro.props;
+---
+
+<section id={id} class="py-12 sm:py-16 lg:py-20 relative overflow-x-clip">
+  <div class="shell">
+    <!-- Centred lead. -->
+    <div class="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
+      <span class="t-section-eyebrow block mb-3">{eyebrow}</span>
+      <h2 class="t-section-title">{title}</h2>
+      <p class="mt-4 text-[16px] sm:text-[17px] leading-[1.55] text-text-soft">{body}</p>
+    </div>
+
+    <!-- Split: video + bullets. -->
+    <div
+      class:list={[
+        'grid items-center gap-8 lg:gap-14 grid-cols-1 lg:grid-cols-2',
+        flip && 'lg:[direction:rtl]',
+      ]}
+    >
+      <div class="lg:[direction:ltr]">
+        <VideoCard title={videoTitle} videoId={videoId} />
+      </div>
+      <div class="lg:[direction:ltr]">
+        <h3 class="text-[18px] sm:text-[20px] font-bold text-navy m-0 mb-5">{listTitle}</h3>
+        <FeatureList>
+          <slot />
+        </FeatureList>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,67 @@
+---
+/**
+ * `/media-community` — Spanish Media & Community page (default locale).
+ *
+ * Features three product videos via reusable showcases:
+ *   1. About the Product  — VideoShowcase + "how it works" bullets.
+ *   2. App Validation      — VideoShowcase (flipped) + validation bullets.
+ *   3. About the Team      — TeamShowcase (roster table + team video).
+ *
+ * Reuses FeatureItem/FeatureList and VideoCard so no bespoke bullet or player
+ * markup lives here.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/site/SiteHeader.astro';
+import SiteFooter from '../components/site/SiteFooter.astro';
+import MediaHero from '../components/sections/MediaHero.astro';
+import VideoShowcase from '../components/sections/VideoShowcase.astro';
+import TeamShowcase from '../components/sections/TeamShowcase.astro';
+import FeatureItem from '../components/sections/FeatureItem.astro';
+import { videos } from '../config/videos';
+import { useTranslations } from '../i18n/utils';
+
+const t = useTranslations(Astro.currentLocale);
+---
+
+<BaseLayout title={t('media.meta.title')} description={t('media.meta.description')}>
+  <SiteHeader active="media" />
+  <MediaHero />
+
+  <!-- 1 · About the Product -->
+  <VideoShowcase
+    id="product"
+    eyebrow={t('media.product.eyebrow')}
+    title={t('media.product.title')}
+    body={t('media.product.body')}
+    videoTitle={t('media.product.video')}
+    videoId={videos.product}
+    listTitle={t('media.product.list.title')}
+  >
+    <FeatureItem theme="employee" lead={t('media.product.f1.lead')}>{t('media.product.f1.rest')}</FeatureItem>
+    <FeatureItem theme="ai" lead={t('media.product.f2.lead')}>{t('media.product.f2.rest')}</FeatureItem>
+    <FeatureItem theme="hr" lead={t('media.product.f3.lead')}>{t('media.product.f3.rest')}</FeatureItem>
+    <FeatureItem theme="employee" lead={t('media.product.f4.lead')}>{t('media.product.f4.rest')}</FeatureItem>
+  </VideoShowcase>
+
+  <!-- 2 · App Validation -->
+  <VideoShowcase
+    id="validation"
+    eyebrow={t('media.validation.eyebrow')}
+    title={t('media.validation.title')}
+    body={t('media.validation.body')}
+    videoTitle={t('media.validation.video')}
+    videoId={videos.validation}
+    listTitle={t('media.validation.list.title')}
+    flip
+  >
+    <FeatureItem theme="employee" lead={t('media.validation.f1.lead')}>{t('media.validation.f1.rest')}</FeatureItem>
+    <FeatureItem theme="hr" lead={t('media.validation.f2.lead')}>{t('media.validation.f2.rest')}</FeatureItem>
+    <FeatureItem theme="ai" lead={t('media.validation.f3.lead')}>{t('media.validation.f3.rest')}</FeatureItem>
+    <FeatureItem theme="employee" lead={t('media.validation.f4.lead')}>{t('media.validation.f4.rest')}</FeatureItem>
+  </VideoShowcase>
+
+  <!-- 3 · About the Team -->
+  <TeamShowcase videoId={videos.team} />
+
+  <SiteFooter />
+</BaseLayout>

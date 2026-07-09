@@ -1,0 +1,52 @@
+---
+/**
+ * TeamShowcase — the "About the Team" section.
+ *
+ * Centred eyebrow/title/body, then the TeamTable roster, then a centred
+ * "Meet Our Team" VideoCard below it (mirrors the mockup's Our Team layout).
+ *
+ * Member names are literal (they don't translate); roles and descriptions come
+ * from the dictionary. The roster is the real Elysium team.
+ */
+import TeamTable from './TeamTable.astro';
+import VideoCard from '../ui/VideoCard.astro';
+import { useTranslations } from '../../i18n/utils';
+
+interface Props {
+  /** YouTube video ID or URL for the "Meet Our Team" video. */
+  videoId?: string;
+}
+
+const { videoId = '' } = Astro.props;
+const t = useTranslations(Astro.currentLocale);
+
+const members = [
+  { name: 'Gianmarco Fabian Jiménez Guerra', role: t('media.team.m1.role'), desc: t('media.team.m1.desc') },
+  { name: 'Flor De María Contreras Leon', role: t('media.team.m2.role'), desc: t('media.team.m2.desc') },
+  { name: 'Diego Andres Avalos', role: t('media.team.m3.role'), desc: t('media.team.m3.desc') },
+  { name: 'Piero Francesco Tenorio Medina', role: t('media.team.m4.role'), desc: t('media.team.m4.desc') },
+  { name: 'Cesar Augusto Arostegui Alzamora', role: t('media.team.m5.role'), desc: t('media.team.m5.desc') },
+];
+---
+
+<section id="team" class="py-12 sm:py-16 lg:py-20 relative overflow-x-clip">
+  <div class="shell">
+    <div class="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
+      <span class="t-section-eyebrow block mb-3">{t('media.team.eyebrow')}</span>
+      <h2 class="t-section-title">{t('media.team.title')}</h2>
+      <p class="mt-4 text-[16px] sm:text-[17px] leading-[1.55] text-text-soft">{t('media.team.body')}</p>
+    </div>
+
+    <div class="max-w-4xl mx-auto">
+      <TeamTable title={t('media.team.table.title')} members={members} />
+    </div>
+
+    <!-- Meet the team video. -->
+    <div class="max-w-3xl mx-auto mt-14 sm:mt-16 text-center">
+      <h3 class="text-[20px] sm:text-[24px] font-extrabold text-navy tracking-[-0.01em] m-0 mb-6">
+        {t('media.team.meet')}
+      </h3>
+      <VideoCard title={t('media.team.video')} videoId={videoId} />
+    </div>
+  </div>
+</section>

@@ -9,6 +9,7 @@ The marketing site for **SoftWork**, a workplace climate / wellbeing platform bu
 - **Landing** — `/` (es), `/en/` (en) — hero + benefits + CTA.
 - **How it works** — `/how-it-works` (es), `/en/how-it-works` (en) — three product flows in a stepped/animated layout: anonymous report, AI assistant (Ely), HR dashboard.
 - **Request demo** — `/request-demo` (es), `/en/request-demo` (en) — placeholder shown when users click "Request Demo". Communicates that the mobile apps are still in development; offers a "talk to sales" mailto and a back-to-home secondary.
+- **Media & Community** — `/media-community` (es), `/en/media-community` (en) — three video showcases (About the Product, App Validation, About the Team) plus the Elysium team roster. Videos embed YouTube via `VideoCard` (click-to-load facade). **Paste the video IDs/URLs in [src/config/videos.ts](src/config/videos.ts)** — one place, shared by both locales. An empty value leaves that card an inert placeholder.
 
 Presentational only — no backend, no real form submission, no analytics wiring.
 
@@ -39,10 +40,12 @@ src/
 │  ├─ index.astro             ← / (es, default locale) — landing
 │  ├─ how-it-works.astro      ← /how-it-works (es) — three product flows
 │  ├─ request-demo.astro      ← /request-demo (es) — "mobile apps in development" placeholder
+│  ├─ media-community.astro   ← /media-community (es) — video showcases + team roster
 │  └─ en/
 │     ├─ index.astro          ← /en/  (English landing)
 │     ├─ how-it-works.astro   ← /en/how-it-works  (English how-it-works)
-│     └─ request-demo.astro   ← /en/request-demo  (English placeholder)
+│     ├─ request-demo.astro   ← /en/request-demo  (English placeholder)
+│     └─ media-community.astro ← /en/media-community  (English media & community)
 ├─ layouts/BaseLayout.astro  ← <html lang=…>, <head>, fonts, slot
 ├─ styles/global.css         ← Tailwind entrypoint + @theme + keyframes + .shell / .t-* helpers
 ├─ i18n/
@@ -50,13 +53,14 @@ src/
 │  └─ utils.ts               ← useTranslations · resolveLang · localizedPath
 ├─ icons/*.svg               ← consumed by <Icon name="…" />
 └─ components/
-   ├─ ui/         Button · Chip · Pulse · HeroEyebrow · SectionLead · ValueLink
+   ├─ ui/         Button · Chip · Pulse · HeroEyebrow · SectionLead · ValueLink · VideoCard
    ├─ brand/      BrandMark · Logo
    ├─ site/       SiteHeader · NavLink · SiteFooter · FooterColumn · SocialLinks · LanguageSwitcher
    ├─ phone/      PhoneFrame · PhoneStatusBar · HeroPhone · MoodSelector · PhoneTile
    ├─ sections/   Hero · HeroVisual · HeroTrust · FloatCard · StatsStrip · Stat ·
    │              Benefits · ValueBlock · FeatureList · FeatureItem · CTABanner
    │              CFHero · CFStepTabs · CFCta · Scenario · ScenarioStepList · ScenarioStep
+   │              MediaHero · VideoShowcase · TeamShowcase · TeamTable · TeamRow
    ├─ phone/      PhoneFrame · PhoneStatusBar · HeroPhone · MoodSelector · PhoneTile
    │              ReportPhone · ReportPills · ReportPrivacyBox · ReportConfirm · ReportForumCard
    │              CFAIPhone · HRPhone

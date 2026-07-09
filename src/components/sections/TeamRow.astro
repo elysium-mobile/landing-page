@@ -1,0 +1,29 @@
+---
+/**
+ * TeamRow — one member row inside TeamTable.
+ *
+ * Responsive: a 3-column grid on md+ (name / role / description), collapsing to
+ * a stacked block on mobile where the name is bold, the role is the teal accent,
+ * and the description sits muted below — readable without column headers.
+ */
+interface Props {
+  name: string;
+  role: string;
+  desc: string;
+  /** Top divider — true for every row after the first. */
+  divide?: boolean;
+}
+
+const { name, role, desc, divide = false } = Astro.props;
+---
+
+<div
+  class:list={[
+    'grid grid-cols-1 md:grid-cols-[1.2fr_1fr_1.8fr] gap-1 md:gap-4 md:items-center px-5 sm:px-6 py-4 sm:py-5',
+    divide && 'border-t border-line',
+  ]}
+>
+  <div class="font-bold text-navy text-[14px] sm:text-[15px]">{name}</div>
+  <div class="text-teal-deep font-semibold text-[13px] sm:text-[14px]">{role}</div>
+  <div class="text-text-soft text-[13px] sm:text-[14px] leading-snug">{desc}</div>
+</div>

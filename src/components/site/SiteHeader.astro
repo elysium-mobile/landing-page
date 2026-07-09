@@ -23,7 +23,7 @@ import { useTranslations, localizedPath } from '../../i18n/utils';
 
 interface Props {
   /** Which nav item is current; controls the underline. */
-  active?: 'home' | 'benefits' | 'how-it-works';
+  active?: 'home' | 'benefits' | 'how-it-works' | 'media';
 }
 
 const { active = 'home' } = Astro.props;
@@ -43,6 +43,7 @@ const lp = (path: string) => localizedPath(Astro.currentLocale, path);
       <NavLink href={lp('/')} active={active === 'home'}>{t('header.nav.home')}</NavLink>
       <NavLink href={lp('/#benefits')} active={active === 'benefits'}>{t('header.nav.benefits')}</NavLink>
       <NavLink href={lp('/how-it-works')} active={active === 'how-it-works'}>{t('header.nav.how')}</NavLink>
+      <NavLink href={lp('/media-community')} active={active === 'media'}>{t('header.nav.media')}</NavLink>
     </nav>
 
     <div class="flex items-center gap-2 sm:gap-3">
@@ -80,7 +81,7 @@ const lp = (path: string) => localizedPath(Astro.currentLocale, path);
     data-open="false"
     class="md:hidden overflow-hidden border-t border-line-strong/0 bg-bg/95 backdrop-blur-md transition-all duration-200 ease-out
            max-h-0 opacity-0 pointer-events-none
-           data-[open=true]:max-h-105 data-[open=true]:opacity-100 data-[open=true]:pointer-events-auto data-[open=true]:border-line-strong/60"
+           data-[open=true]:max-h-125 data-[open=true]:opacity-100 data-[open=true]:pointer-events-auto data-[open=true]:border-line-strong/60"
   >
     <div class="shell py-4 flex flex-col gap-1">
       <a
@@ -95,6 +96,10 @@ const lp = (path: string) => localizedPath(Astro.currentLocale, path);
         href={lp('/how-it-works')}
         class:list={['py-2.5 text-[15px] font-medium', active === 'how-it-works' ? 'text-navy' : 'text-ink']}
       >{t('header.nav.how')}</a>
+      <a
+        href={lp('/media-community')}
+        class:list={['py-2.5 text-[15px] font-medium', active === 'media' ? 'text-navy' : 'text-ink']}
+      >{t('header.nav.media')}</a>
 
       <div class="mt-2 pt-3 border-t border-line flex items-center justify-between gap-3">
         <a href="#" class="text-[14px] font-semibold text-navy underline-offset-4 hover:underline">{t('header.cta.signin')}</a>

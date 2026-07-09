@@ -1,0 +1,42 @@
+---
+/**
+ * MediaHero — centred hero for the Media & Community page.
+ *
+ * Mirrors the landing Hero's atmosphere (soft halos + fade-up stagger) but
+ * stays single-column and centred, since the page below it is a stack of
+ * full-width video showcases rather than a 2-column split.
+ */
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations(Astro.currentLocale);
+---
+
+<section class="relative pt-12 pb-6 sm:pt-16 sm:pb-10 lg:pt-20 lg:pb-12 overflow-x-clip text-center">
+  <div class="media-glow"></div>
+
+  <div class="shell relative z-10 max-w-3xl mx-auto">
+    <div class="fade-up flex justify-center mb-6">
+      <span class="inline-flex items-center px-3.5 py-1.5 rounded-full bg-teal/10 text-teal-deep text-[12px] font-semibold tracking-widest uppercase">
+        {t('media.hero.eyebrow')}
+      </span>
+    </div>
+    <h1 class="t-display fade-up delay-1 m-0 mb-6" set:html={t('media.hero.title.html')}></h1>
+    <p class="text-[16px] sm:text-[18px] leading-[1.55] text-text-soft max-w-160 mx-auto m-0 fade-up delay-2">
+      {t('media.hero.body')}
+    </p>
+  </div>
+</section>
+
+<style>
+  .media-glow {
+    position: absolute;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 760px;
+    height: 640px;
+    background: radial-gradient(circle at center, rgba(77, 168, 218, 0.16) 0%, rgba(77, 168, 218, 0) 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+</style>

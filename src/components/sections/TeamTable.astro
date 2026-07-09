@@ -1,0 +1,44 @@
+---
+/**
+ * TeamTable — bordered roster card: a title bar, column headers (md+ only),
+ * then one TeamRow per member.
+ *
+ * Column headers are hidden on mobile because the stacked TeamRow layout is
+ * self-labelling there (bold name, teal role, muted description).
+ */
+import TeamRow from './TeamRow.astro';
+import { useTranslations } from '../../i18n/utils';
+
+interface Member {
+  name: string;
+  role: string;
+  desc: string;
+}
+
+interface Props {
+  /** Card heading ("Team members"). */
+  title: string;
+  members: Member[];
+}
+
+const { title, members } = Astro.props;
+const t = useTranslations(Astro.currentLocale);
+---
+
+<div
+  class="bg-surface rounded-2xl sm:rounded-3xl border border-line overflow-hidden"
+  style="box-shadow:var(--shadow-card);"
+>
+  <div class="text-center py-5 border-b border-line">
+    <h3 class="m-0 text-[16px] sm:text-[18px] font-bold text-navy">{title}</h3>
+  </div>
+
+  <!-- Column headers — md+ only. -->
+  <div class="hidden md:grid grid-cols-[1.2fr_1fr_1.8fr] gap-4 px-6 py-3 bg-paper text-[11px] font-semibold tracking-widest uppercase text-text-mute">
+    <div>{t('media.team.col.name')}</div>
+    <div>{t('media.team.col.role')}</div>
+    <div>{t('media.team.col.desc')}</div>
+  </div>
+
+  {members.map((m, i) => <TeamRow name={m.name} role={m.role} desc={m.desc} divide={i > 0} />)}
+</div>
